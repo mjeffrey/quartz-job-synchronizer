@@ -1,0 +1,37 @@
+spring:
+  quartz:
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceName: ibis
+            instanceId: AUTO
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 5
+          plugin:
+#            jobInitializer:
+#              class: "org.quartz.plugins.xml.XMLSchedulingDataProcessorPlugin"
+#              fileNames: "classpath:jobs.xml"
+#              scanInterval: 0
+#              failOnFileNotFound: true
+            jobSynchronizer:
+              class: "be.sysa.quartz.initializer.YamlJobSynchronizerPlugin"
+              fileNames: "classpath:jobs.yaml" #, classpath:ibis-jobs.yaml
+              allowJobs: "org.quartz.NativeJob"
+            yamlScheduleExporter:
+              class: "be.sysa.quartz.initializer.YamlScheduleExporterPlugin"
+              exportFile: "${java.io.tmpdir}/schedule-export.yaml"
+            XmlYamlConverter:
+              class: "be.sysa.quartz.initializer.XmlYamlConverterPlugin"
+              importFile: "classpath:conversion-jobs.xml"
+              exportFile: "${java.io.tmpdir}/conversion-jobs.yaml"
+
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: always
+  datasource:
+    url: "jdbc:h2:file:~/test.h2db:spring-quartz;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE"
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:

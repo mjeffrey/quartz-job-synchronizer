@@ -1,0 +1,37 @@
+schedule:
+  - group: "maximal"
+    jobs:
+      - job-name: "MaximalJob"
+        job-class: "be.sysa.quartz.jobs.SampleJob"
+        recover: true
+        durable: true
+        triggers:
+          - name: "FileGeneration"
+            trigger-group: "triggerGroup"
+            time-zone: "Europe/Brussels"
+            expressions:
+              - "0 * * ? * * *"
+            description: "At 02:00, only on Monday, Tuesday, Wednesday, Thursday, and Friday"
+            misfire-execution: true
+            priority: 10
+            job-data-map:
+              datakey2: "0.123"
+              datakey1: "valueX"
+        job-data-map:
+          Key2: "2"
+          Key5: "value1"
+  - group: "minimal"
+    jobs:
+      - job-name: "MinimalJob"
+        job-class: "be.sysa.quartz.jobs.SampleJob"
+        recover: false
+        durable: false
+        job-data-map: {}
+
+        triggers:
+          - name: "FileGeneration"
+            expressions:
+              - "0 0 2 ? * MON,TUE,WED,THU,FRI *"
+            misfire-execution: false
+            job-data-map: {}
+

@@ -1,0 +1,154 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$ref": "#/definitions/ScheduleDefinition",
+  "definitions": {
+    "ScheduleDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schedule": {
+          "description": "A schedule of Job Groups",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Groups"
+          }
+        }
+      },
+      "required": [
+        "schedule"
+      ],
+      "title": "Quartz Schedules"
+    },
+    "Options": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "groups-to-delete": {
+          "description": "A list of Job Groups that are Obsolete and should be deleted.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "Schedule Options"
+    },
+    "Groups": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "group": {
+          "type": "string",
+          "description": "A Job Group. A unique named collection of Jobs and their Triggers"
+        },
+        "jobs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Job"
+          }
+        }
+      },
+      "required": [
+        "group",
+        "jobs"
+      ],
+      "title": "Schedule"
+    },
+    "Job": {
+      "type": "object",
+      "description": "A Quartz Job uniquely identified with the Group/Job name combination (JobKey)",
+      "additionalProperties": false,
+      "properties": {
+        "job-name": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Unique Job name within a Job Group"
+        },
+        "job-class": {
+          "type": "string",
+          "description": "Full Qualified Name of the Job Class. This class MUST be resolvable at startup and implement \"org.quartz.Job\""
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the Job"
+        },
+        "recover": {
+          "default": false,
+          "type": "boolean",
+          "description": "If the Trigger should recover on failure"
+        },
+        "triggers": {
+          "description": "A list of CRON trigger to start a job at specified times.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Trigger"
+          }
+        },
+        "jobDataMap": {
+          "description": "A Map of Key Strings to Objects that will be supplied to the Job",
+          "$ref": "#/definitions/JobDataMap"
+        }
+      },
+      "required": [
+        "job-class",
+        "job-name",
+        "triggers"
+      ],
+      "title": "Job"
+    },
+    "JobDataMap": {
+      "type": "object",
+      "additionalProperties":  { "type": ["number", "string"]  },
+      "title": "JobDataMap"
+    },
+    "Trigger": {
+      "type": "object",
+      "title": "Trigger",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the trigger. The Trigger Name will be the JobName.TriggerName.ScheduleNumber (number of the cron expression)",
+          "maxLength": 30
+        },
+        "trigger-group": {
+          "type": "string",
+          "description": "The name of the Trigger Group (can be different from the Job Group). If not specified the Job Group is used."
+        },
+        "misfireExecution": {
+          "type": "boolean"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the trigger stored with the job."
+        },
+        "priority": {
+          "type": "integer",
+          "maximum": 15,
+          "minimum": 1,
+          "default": 5,
+          "description": "Priority of Job trigger. 1 lowest, 15 highest, 5 Default"
+        },
+        "expressions": {
+          "type": "array",
+          "description": "List of Quartz CRON expressions. Usually there is only one but if there are more a trigger is created for each.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "timeZone": {
+          "description": "Valid Timezone e.g. Europe/Brussels, CET, UTC. If not specified UTC will be used.",
+          "type": "string"
+        },
+        "jobDataMap": {
+          "$ref": "#/definitions/JobDataMap",
+          "description": "A Map of Key Strings to Objects that will be supplied to the Job when started by this Trigger"
+        }
+      },
+      "required": [
+        "expressions",
+        "name"
+      ]
+    }
+  }
+}

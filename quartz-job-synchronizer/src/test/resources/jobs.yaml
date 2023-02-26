@@ -1,0 +1,39 @@
+options:
+  groups-to-delete:
+    - "Obsolete Group"
+
+schedule:
+  - group: "maximal"
+    jobs:
+      - job-name: "MaximalJob"
+        job-class: "be.sysa.quartz.jobs.SampleJob"
+        recover: true
+        durable: false
+        triggers:
+          - name: "FileGeneration"
+            trigger-group: "triggerGroup"
+            misfire-execution: true
+            description: "every 5 minutes starting at minute 02, every hour between 06:00 and 20:00, every Weekday"
+            priority: 10
+            expressions:
+              - "0 1/5 6-20 ? * MON,TUE,WED,THU,FRI *"
+              - "0 0 2 ? * MON,TUE,WED,THU,FRI *"
+            time-zone: "Europe/Brussels"
+            job-data-map:
+              datakey: "valueX"
+              datakey2: 0.123
+          - name: "trigger2"
+            expressions:
+              - "0 0 2 ? * MON,TUE,WED,THU,FRI *"
+
+        job-data-map:
+          "job-data-1": "2023-01-01"
+          "job-data-2": 23
+  - group: "minimal"
+    jobs:
+      - job-name: "MinimalJob"
+        job-class: "be.sysa.quartz.jobs.SampleJob"
+        triggers:
+          - name: "FileGeneration"
+            expressions:
+              - "0 0 2 ? * MON,TUE,WED,THU,FRI *"

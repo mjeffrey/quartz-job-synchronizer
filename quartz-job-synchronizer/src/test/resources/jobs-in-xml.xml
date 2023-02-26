@@ -1,0 +1,62 @@
+<job-scheduling-data version="2.0"
+                     xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData https://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd">
+    <schedule>
+        <job>
+            <name>MaximalJob</name>
+            <group>maximal</group>
+            <job-class>be.sysa.quartz.jobs.SampleJob</job-class>
+            <durability>true</durability>
+            <recover>true</recover>
+            <job-data-map>
+                <entry>
+                    <key>Key5</key>
+                    <value>value1</value>
+                </entry>
+                <entry>
+                    <key>Key2</key>
+                    <value>2</value>
+                </entry>
+            </job-data-map>
+        </job>
+        <job>
+            <name>MinimalJob</name>
+            <group>minimal</group>
+            <job-class>be.sysa.quartz.jobs.SampleJob</job-class>
+        </job>
+
+       <trigger>
+            <cron>
+                <name>FileGeneration</name>
+                <job-name>MinimalJob</job-name>
+                <job-group>minimal</job-group>
+                <cron-expression>0 0 2 ? * MON,TUE,WED,THU,FRI *</cron-expression>
+            </cron>
+        </trigger>
+
+        <trigger>
+            <cron>
+                <name>FileGeneration</name>
+                <group>triggerGroup</group>
+                <description>At 02:00, only on Monday, Tuesday, Wednesday, Thursday, and Friday</description>
+                <job-name>MaximalJob</job-name>
+                <job-group>maximal</job-group>
+                <priority>10</priority>
+                <job-data-map>
+                    <entry>
+                        <key>datakey1</key>
+                        <value>valueX</value>
+                    </entry>
+                    <entry>
+                        <key>datakey2</key>
+                        <value>0.123</value>
+                    </entry>
+                </job-data-map>
+                <misfire-instruction>MISFIRE_INSTRUCTION_FIRE_ONCE_NOW</misfire-instruction>
+                <cron-expression>0 * * ? * * *</cron-expression>
+                <time-zone>Europe/Brussels</time-zone>
+            </cron>
+        </trigger>
+    </schedule>
+</job-scheduling-data>
