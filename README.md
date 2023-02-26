@@ -1,6 +1,8 @@
 # Quartz YAML Job Synchronizer
 
-This is a Quartz Scheduler plugin to maintain jobs and triggers. It the concept of the provide Quartz XML Job plugin and (I hope) improves it.
+This is a Quartz Scheduler plugin to maintain jobs and triggers. 
+It is meant as a replacement for Quartz XML Job plugin provided by Quartz and uses the same concepts but improves on it and
+has simpler more logical configuration less prone to errors or unexpected consequences.
 
 ### Features:
 - Only replaces Jobs in a group if they have really changed
