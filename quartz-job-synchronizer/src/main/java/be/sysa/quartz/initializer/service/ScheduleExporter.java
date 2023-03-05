@@ -46,17 +46,17 @@ public class ScheduleExporter {
     public ScheduleDefinitionApi readExistingSchedule() {
         ScheduleDefinitionApi.ScheduleDefinitionApiBuilder scheduleBuilder = ScheduleDefinitionApi.builder();
         scheduleAccessor.getJobGroupNames().forEach(
-                groupName -> readGroup(scheduleBuilder, groupName)
+                groupName -> scheduleBuilder.group(readGroup(groupName))
         );
         return scheduleBuilder.build();
     }
 
-    private void readGroup(ScheduleDefinitionApi.ScheduleDefinitionApiBuilder scheduleBuilder, String groupName) {
+    private GroupDefinitionApi readGroup(String groupName) {
         GroupDefinitionApi.GroupDefinitionApiBuilder groupBuilder = GroupDefinitionApi.builder().name(groupName);
         scheduleAccessor.getJobsInGroup(groupName).forEach(
                 jobKey -> groupBuilder.job(readJob(jobKey))
         );
-        scheduleBuilder.group(groupBuilder.build());
+        return groupBuilder.build();
     }
 
     private JobDefinitionApi readJob(JobKey jobKey) {
