@@ -9,6 +9,15 @@ schedule:
         job-class: "be.sysa.quartz.jobs.SampleJob"
         recover: true
         durable: false
+        dependencies:
+          - name: "MinimalJobFinished"
+            child-job-group: "minimal" #/ defaults to current
+            child-job-name: "MinimalJob"
+            priority: 10
+            ignore-parent-error: true
+            job-data-map:
+              datakey1: "valueX"
+              datakey2: 0.123
         triggers:
           - name: "FileGeneration"
             trigger-group: "triggerGroup"
@@ -25,7 +34,6 @@ schedule:
           - name: "trigger2"
             expressions:
               - "0 0 2 ? * MON,TUE,WED,THU,FRI *"
-
         job-data-map:
           "job-data-1": "2023-01-01"
           "job-data-2": 23

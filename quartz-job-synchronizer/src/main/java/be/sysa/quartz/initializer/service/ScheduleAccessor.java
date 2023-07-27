@@ -5,12 +5,7 @@ import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.quartz.CronTrigger;
-import org.quartz.JobDetail;
-import org.quartz.JobKey;
-import org.quartz.Scheduler;
-import org.quartz.Trigger;
-import org.quartz.TriggerKey;
+import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
 
 import java.util.List;
@@ -90,5 +85,9 @@ public class ScheduleAccessor {
     @SneakyThrows
     public String getSchedulerName() {
         return scheduler.getSchedulerName();
+    }
+
+    public ListenerManager getListenerManager() throws SchedulerException {
+        return scheduler.getListenerManager();
     }
 }

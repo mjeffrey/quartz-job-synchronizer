@@ -8,6 +8,8 @@ import org.quartz.Job;
 import org.quartz.JobKey;
 import org.quartz.TriggerKey;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @Value
@@ -25,6 +27,10 @@ public class JobDefinition {
 
     @NonNull
     Map<TriggerKey, TriggerDefinition> triggers;
+
+    @NonNull
+    @Builder.Default
+    List< DependencyDefinition> dependencies = Collections.emptyList();
 
     Map<String, Object> jobDataMap;
 }

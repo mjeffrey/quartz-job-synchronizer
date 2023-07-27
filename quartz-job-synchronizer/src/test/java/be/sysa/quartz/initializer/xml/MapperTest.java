@@ -25,6 +25,7 @@ public class MapperTest {
             try (InputStream yamlInputStream = TestFiles.xmlExpectedConvertedToYaml()) {
                 ScheduleDefinitionApi scheduleDefinitionApi = ScheduleLoader.loadSchedule(yamlInputStream);
                 assertThat(xmlScheduleDefinitionApi).usingRecursiveComparison()
+                        .ignoringFieldsMatchingRegexes("groups.*jobs.*dependencies")
                         .isEqualTo(scheduleDefinitionApi);
             }
         }

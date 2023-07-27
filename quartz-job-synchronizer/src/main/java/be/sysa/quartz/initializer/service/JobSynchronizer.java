@@ -1,29 +1,14 @@
 package be.sysa.quartz.initializer.service;
 
-import be.sysa.quartz.initializer.model.GroupDefinition;
-import be.sysa.quartz.initializer.model.JobDefinition;
-import be.sysa.quartz.initializer.model.ScheduleDefinition;
-import be.sysa.quartz.initializer.model.TriggerDefinition;
+import be.sysa.quartz.initializer.model.*;
 import be.sysa.quartz.initializer.support.ComparisonSupport;
 import be.sysa.quartz.initializer.support.SetUtils;
 import lombok.SneakyThrows;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.quartz.CronScheduleBuilder;
-import org.quartz.CronTrigger;
-import org.quartz.JobBuilder;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.JobKey;
-import org.quartz.Scheduler;
-import org.quartz.Trigger;
-import org.quartz.TriggerBuilder;
-import org.quartz.TriggerKey;
+import org.quartz.*;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static be.sysa.quartz.initializer.support.SetUtils.intersection;
@@ -47,6 +32,12 @@ public class JobSynchronizer {
         removeUnusedGroups(existingGroups, newGroups);
         addNewGroups(existingGroups, newGroups);
         updateExistingGroupsIfNeeded(existingGroups, newGroups);
+
+        // Add all the dependent Jobs
+        scheduleDefinition.getGroups().values()
+                .stream().map(value -> value.getJobs().values())
+                .flatMap(Collection::stream)
+                .forEach(this::addDependentJobTriggers);
     }
 
     private void deleteGroupsSpecified(List<String> groupsToDelete) {
@@ -118,7 +109,6 @@ public class JobSynchronizer {
         removeObsoleteTriggers(existingTriggerKeys, newTriggers);
         addNewTriggers(existingTriggerKeys, newTriggers);
         updateExistingTriggersIfNeeded(existingTriggerKeys, newTriggers);
-
     }
 
     private void updateExistingTriggersIfNeeded(Set<TriggerKey> existingTriggers, Map<TriggerKey, TriggerDefinition> newTriggers) {
@@ -149,6 +139,22 @@ public class JobSynchronizer {
     private void addNewTriggers(Set<TriggerKey> existingTriggers, Map<TriggerKey, TriggerDefinition> newTriggers) {
         Set<TriggerKey> triggersToAdd = minus(newTriggers.keySet(), existingTriggers);
         triggersToAdd.forEach(triggerKey -> addTrigger(newTriggers.get(triggerKey)));
+    }
+
+    @SneakyThrows
+    private void addDependentJobTriggers(JobDefinition jobDefinition) {
+        JobKey parentJobKey = jobDefinition.getJobKey();
+        ListenerManager listenerManager = scheduleAccessor.getListenerManager();
+
+        for (DependencyDefinition dependency : jobDefinition.getDependencies()) {
+            JobKey childJobKey = dependency.getChildJob();
+            log.info("Adding job listener, on completion of job {}, the job {} will run",
+                    parentJobKey,
+                    childJobKey
+            );
+            listenerManager.addJobListener(DependentJobListener.create(dependency),
+                    jobKey->jobKey.equals(parentJobKey));
+        }
     }
 
     private void removeObsoleteTriggers(Set<TriggerKey> existingTriggers, Map<TriggerKey, TriggerDefinition> newTriggers) {
