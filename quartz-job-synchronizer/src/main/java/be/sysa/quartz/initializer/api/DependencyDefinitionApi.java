@@ -19,6 +19,9 @@ public class DependencyDefinitionApi {
     @JsonProperty("child-job-group")
     String childJobGroup;
 
+    @JsonProperty("not-before")
+    String notBefore;
+
     Integer priority;
 
     @JsonProperty("seconds-delay")

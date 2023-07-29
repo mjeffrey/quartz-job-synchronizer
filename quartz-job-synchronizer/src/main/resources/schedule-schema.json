@@ -177,6 +177,11 @@
           "description": "The name of the Job to trigger once this one is complete.",
           "maxLength": 30
         },
+        "not-before": {
+          "type": "string",
+          "description": "The child job will only run after this time. If not specified, it will immediately (or after seconds-delay). Examples: 03:00Z, 04:00 Europe/Brussels, 12:34:56Z. Timezone is required.",
+          "maxLength": 50
+        },
         "ignore-parent-error": {
           "type": "boolean",
           "description": "When true, even if the parent job fails we executed the child.",

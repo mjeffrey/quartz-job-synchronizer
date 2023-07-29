@@ -15,6 +15,7 @@ schedule:
             child-job-name: "MinimalJob"
             priority: 10
             ignore-parent-error: true
+            not-before: 04:00 Europe/Paris
             job-data-map:
               datakey1: "valueX"
               datakey2: 0.123

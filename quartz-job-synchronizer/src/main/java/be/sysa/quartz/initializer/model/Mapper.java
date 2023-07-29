@@ -144,9 +144,14 @@ public class Mapper {
                 .jobDataMap(nullSafeJobDataMap(dependency.getJobDataMap()))
                 .childJob(JobKey.jobKey(dependency.getChildJobName(), childGroup))
                 .priority(priority(dependency.getPriority()))
+                .notBefore(parseZonedTime(dependency.getNotBefore()))
                 .secondsDelay(Objects.requireNonNullElse(dependency.getSecondsDelay(), 0))
                 .parentErrorIgnored(dependency.isIgnoreParentError())
                 .build();
+    }
+
+    private static ZonedTime parseZonedTime(String string) {
+        return string == null ? null : ZonedTime.parse(string);
     }
 
     /**

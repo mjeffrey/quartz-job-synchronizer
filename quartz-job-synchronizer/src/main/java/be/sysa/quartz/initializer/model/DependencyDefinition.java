@@ -14,6 +14,7 @@ public class DependencyDefinition {
     JobKey childJob;
     int priority;
     int secondsDelay;
+    ZonedTime notBefore;
     boolean parentErrorIgnored;
     Map<String, Object> jobDataMap;
 }

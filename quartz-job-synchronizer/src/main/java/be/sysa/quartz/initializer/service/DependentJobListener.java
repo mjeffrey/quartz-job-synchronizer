@@ -1,12 +1,15 @@
 package be.sysa.quartz.initializer.service;
 
 import be.sysa.quartz.initializer.model.DependencyDefinition;
+import be.sysa.quartz.initializer.model.ZonedTime;
 import lombok.SneakyThrows;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 @Value
@@ -51,19 +54,54 @@ public class DependentJobListener implements JobListener {
             }
         }
         Scheduler scheduler = context.getScheduler();
-        Instant startTime = Instant.now().plusSeconds(dependency.getSecondsDelay());
+        StartTime startTime = new StartTime(context, dependency);
         Trigger trigger = TriggerBuilder.newTrigger().forJob(childJobKey)
                 .usingJobData(new JobDataMap(dependency.getJobDataMap()))
                 .withPriority(dependency.getPriority())
-                .startAt(Date.from(startTime))
+                .startAt(startTime.getStart())
                 .build();
-        String startString = dependency.getSecondsDelay() == 0 ? "IMMEDIATE" : startTime.toString();
         log.debug("Triggering job {} as a result of {} startTime: {}",
                 childJobKey,
                 parentJobKey,
-                startString
+                startTime
         );
         scheduler.scheduleJob(trigger);
+    }
+
+    private static class StartTime {
+        private Instant start;
+        private boolean isImmediate;
+
+        public Date getStart() {
+            return Date.from(start);
+        }
+
+        @Override
+        public String toString() {
+            return isImmediate ? "IMMEDIATE" : start.toString();
+        }
+
+        public StartTime(JobExecutionContext context, DependencyDefinition dependency) {
+            ZonedTime notBefore = dependency.getNotBefore();
+            final Instant now = Instant.now();
+            start = now;
+            isImmediate = true;
+            if (notBefore != null) {
+                Instant fireTime = context.getFireTime().toInstant();
+                LocalDate localDate = LocalDate.ofInstant(fireTime, notBefore.getZoneId());
+                Instant notBeforeInstant = ZonedDateTime.of(localDate, notBefore.getLocalTime(), notBefore.getZoneId()).toInstant();
+                if (now.isBefore(notBeforeInstant)) {
+                    start = notBeforeInstant;
+                    isImmediate = false;
+                }
+            }else{
+                int secondsDelay = dependency.getSecondsDelay();
+                if ( secondsDelay > 0 ){
+                    start = now.plusSeconds(dependency.getSecondsDelay());
+                    isImmediate = false;
+                }
+            }
+        }
     }
 
     @Override
