@@ -1,6 +1,6 @@
 package be.sysa;
 
-import be.sysa.quartz.SpringQuartzApp;
+import be.sysa.quartz.SpringBoot2QuartzApp;
 import be.sysa.quartz.initializer.support.YamlObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,7 +22,7 @@ import org.springframework.http.ResponseEntity;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
-@SpringBootTest(classes = SpringQuartzApp.class, webEnvironment= WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = SpringBoot2QuartzApp.class, webEnvironment= WebEnvironment.RANDOM_PORT)
 public class ScheduleExportImportTest {
 
     TestRestTemplate restTemplate = new TestRestTemplate();

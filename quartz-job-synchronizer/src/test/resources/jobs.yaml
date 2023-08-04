@@ -10,7 +10,7 @@ schedule:
         recover: true
         durable: false
         dependencies:
-          - name: "MinimalJobFinished"
+          - name: "MaximalJobFinished"
             child-job-group: "minimal" #/ defaults to current
             child-job-name: "MinimalJob"
             priority: 10

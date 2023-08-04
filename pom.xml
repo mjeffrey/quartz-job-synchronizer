@@ -58,8 +58,7 @@
                 <module>cron-description</module>
                 <module>cron-description-api</module>
                 <module>quartz-job-synchronizer</module>
-                <module>spring-quartz</module>
-                <module>spring-boot3-quartz</module>
+                <module>examples</module>
             </modules>
         </profile>
     </profiles>
@@ -198,6 +197,7 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-simple</artifactId>
                 <version>${slf4j.version}</version>
+                <scope>test</scope>
             </dependency>
 
             <dependency>

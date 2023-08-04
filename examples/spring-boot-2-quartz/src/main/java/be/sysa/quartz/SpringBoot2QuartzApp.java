@@ -9,10 +9,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableScheduling
 @SpringBootApplication
 @EnableTransactionManagement
-public class SpringBootV3QuartzApp {
+public class SpringBoot2QuartzApp {
 
     public static void main(String[] args) {
-        new SpringApplicationBuilder(SpringBootV3QuartzApp.class).bannerMode(Mode.OFF).run(args);
+        new SpringApplicationBuilder(SpringBoot2QuartzApp.class).bannerMode(Mode.OFF).run(args);
     }
-
 }
