@@ -15,6 +15,9 @@
     <properties>
         <spring-boot.version>2.7.14</spring-boot.version>
         <javac.target>11</javac.target>
+        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+        <maven-enforcer-plugin.version>3.3.0</maven-enforcer-plugin.version>
+        <minimum-maven.version>3.6.0</minimum-maven.version>
         <quartz-job-synchronizer.version>1.0.0</quartz-job-synchronizer.version>
     </properties>
     <dependencyManagement>
@@ -92,6 +95,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <compilerVersion>${javac.target}</compilerVersion>
                     <source>${javac.target}</source>
@@ -99,33 +103,27 @@
                     <release>${javac.target}</release>
                 </configuration>
             </plugin>
-
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring-boot.version}</version>
-                <configuration>
-                    <classifier>exec</classifier>
-                    <mainClass>be.sysa.quartz.SpringBoot2QuartzApp</mainClass>
-                    <excludeDevtools>true</excludeDevtools>
-                    <useTestClasspath>true</useTestClasspath>
-                    <executable>true</executable>
-                </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>${maven-enforcer-plugin.version}</version>
                 <executions>
                     <execution>
-                        <id>build-info</id>
+                        <id>enforce-maven</id>
                         <goals>
-                            <goal>build-info</goal>
+                            <goal>enforce</goal>
                         </goals>
-                    </execution>
-                    <execution>
-                        <id>repackage</id>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>${minimum-maven.version}</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
     </build>
 </project>
