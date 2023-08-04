@@ -11,13 +11,13 @@
     <parent>
         <groupId>be.sysa.quartz-job-synchronizer</groupId>
         <artifactId>examples</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
     <artifactId>spring-boot-3-quartz</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>${revision}</version>
 
     <properties>
-        <spring-boot.version>3.0.5</spring-boot.version>
+        <spring-boot.version>3.1.2</spring-boot.version>
     </properties>
     <dependencyManagement>
         <dependencies>
