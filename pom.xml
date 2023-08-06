@@ -11,6 +11,28 @@
     <description>
         A simple Quartz plugin to make it easier to define and maintain quartz jobs and triggers at startup.
     </description>
+    <url>https://github.com/mjeffrey/quartz-job-synchronizer</url>
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Mark Jeffrey</name>
+            <email>mark@sysa.be</email>
+            <organization>sysa</organization>
+            <organizationUrl>https://www.sysa.be</organizationUrl>
+        </developer>
+    </developers>
+    <scm>
+        <connection>scm:git:git://github.com/mjeffrey/.git</connection>
+        <developerConnection>scm:git:ssh://github.com:mjeffrey/quartz-job-synchronizer.git</developerConnection>
+        <url>https://github.com/mjeffrey/quartz-job-synchronizer.git</url>
+        <tag>develop</tag>
+    </scm>
+
     <modules>
         <module>cron-description</module>
         <module>cron-description-api</module>
