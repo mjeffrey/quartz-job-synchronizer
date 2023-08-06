@@ -1,0 +1,36 @@
+name: Maven Package
+
+on:
+  push:
+    branches:
+      - 'release/*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Extract version from branch name
+        shell: bash
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/heads/release/}" >> $GITHUB_ENV
+
+      - name: Set up JDK 17 for deploy to OSSRH
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '17'
+          cache: 'maven'
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_CENTRAL_TOKEN
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Publish to Apache Maven Central
+        run: mvn -B deploy -PossrhDeploy -DskipTests -Drevision=${{ env.RELEASE_VERSION }} -projects quartz-job-synchronizer,cron-description,cron-description-api
+        env:
+          MAVEN_USERNAME: a+ylMfU5
+          MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}

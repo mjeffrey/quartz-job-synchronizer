@@ -12,10 +12,10 @@
     <parent>
         <groupId>be.sysa.quartz-job-synchronizer</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
 
-    <version>1.0.1-SNAPSHOT</version>
+    <version>${revision}</version>
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>

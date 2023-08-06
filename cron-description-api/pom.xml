@@ -6,13 +6,13 @@
 
     <artifactId>cron-description-api</artifactId>
     <name>API for getting a cron description</name>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>${revision}</version>
     <packaging>jar</packaging>
     <description>Demo project for Scheduling in Spring with Quartz</description>
     <parent>
         <groupId>be.sysa.quartz-job-synchronizer</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
     <dependencies>
     </dependencies>
