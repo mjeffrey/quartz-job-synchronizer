@@ -27,11 +27,8 @@ jobs:
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
-      - name: Build with Maven
-        run: mvn -B package --file pom.xml -DskipTests -Drevision=${{ env.RELEASE_VERSION }}
-
       - name: Publish to Apache Maven Central
-        run: mvn -B deploy -P ossrhDeploy -Drevision=${{ env.RELEASE_VERSION }}
+        run: mvn -B deploy -P ossrhDeploy -DskipTests -Drevision=${{ env.RELEASE_VERSION }}
         env:
           MAVEN_USERNAME: a+ylMfU5
           MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
