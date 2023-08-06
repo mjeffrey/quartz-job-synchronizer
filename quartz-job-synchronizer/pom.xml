@@ -4,16 +4,18 @@
     <parent>
         <groupId>be.sysa.quartz-job-synchronizer</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>quartz-job-synchronizer</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <name>Quartz Job Synchronizer</name>
+    <version>${revision}</version>
 
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
@@ -50,6 +52,11 @@
             <groupId>it.burning</groupId>
             <artifactId>cron-expression-descriptor</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>

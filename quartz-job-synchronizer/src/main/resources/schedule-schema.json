@@ -84,7 +84,14 @@
             "$ref": "#/definitions/Trigger"
           }
         },
-        "jobDataMap": {
+        "dependencies": {
+          "description": "A list of dependent jobs that will be triggered once this job has executed.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Dependency"
+          }
+        },
+        "job-data-map": {
           "description": "A Map of Key Strings to Objects that will be supplied to the Job",
           "$ref": "#/definitions/JobDataMap"
         }
@@ -140,7 +147,61 @@
           "description": "Valid Timezone e.g. Europe/Brussels, CET, UTC. If not specified UTC will be used.",
           "type": "string"
         },
-        "jobDataMap": {
+        "job-data-map": {
+          "$ref": "#/definitions/JobDataMap",
+          "description": "A Map of Key Strings to Objects that will be supplied to the Job when started by this Trigger"
+        }
+      },
+      "required": [
+        "expressions",
+        "name"
+      ]
+    },
+    "Dependency": {
+      "type": "object",
+      "title": "Dependency",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the dependency, Will become the Job Listener Name ",
+          "maxLength": 255
+        },
+        "child-job-group": {
+          "type": "string",
+          "description": "The name of the Job Group to trigger once this one is complete (can be different from the Job Group). If not specified the current Job Group is used.",
+          "maxLength": 30
+        },
+        "child-job-name": {
+          "type": "string",
+          "description": "The name of the Job to trigger once this one is complete.",
+          "maxLength": 30
+        },
+        "not-before": {
+          "type": "string",
+          "description": "The child job will only run after this time. If not specified, it will immediately (or after seconds-delay). Examples: 03:00Z, 04:00 Europe/Brussels, 12:34:56Z. Timezone is required.",
+          "maxLength": 50
+        },
+        "ignore-parent-error": {
+          "type": "boolean",
+          "description": "When true, even if the parent job fails we executed the child.",
+          "default": false
+        },
+        "priority": {
+          "type": "integer",
+          "maximum": 15,
+          "minimum": 1,
+          "default": 5,
+          "description": "Priority of Job. 1 lowest, 15 highest, 5 Default"
+        },
+        "seconds-delay": {
+          "type": "integer",
+          "maximum": 86400,
+          "minimum": 0,
+          "default": 0,
+          "description": "Number of seconds to delay before executing the child job"
+        },
+        "job-data-map": {
           "$ref": "#/definitions/JobDataMap",
           "description": "A Map of Key Strings to Objects that will be supplied to the Job when started by this Trigger"
         }

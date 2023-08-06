@@ -1,9 +1,6 @@
 package be.sysa.quartz.initializer.model;
 
-import be.sysa.quartz.initializer.api.GroupDefinitionApi;
-import be.sysa.quartz.initializer.api.JobDefinitionApi;
-import be.sysa.quartz.initializer.api.ScheduleDefinitionApi;
-import be.sysa.quartz.initializer.api.TriggerDefinitionApi;
+import be.sysa.quartz.initializer.api.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -15,11 +12,7 @@ import org.quartz.Trigger;
 import org.quartz.TriggerKey;
 
 import java.time.ZoneOffset;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -64,6 +57,7 @@ public class Mapper {
                 .jobDataMap(nullSafeJobDataMap(job.getJobDataMap()))
                 .description(job.getDescription())
                 .triggers(toTriggers(jobKey, job))
+                .dependencies(toDependencies(jobKey, job))
                 .build();
     }
 
@@ -97,7 +91,7 @@ public class Mapper {
                 .description(triggerDefinitionApi.getDescription())
                 .jobkey(jobKey)
                 .misfireExecution(misfireHandling(triggerDefinitionApi))
-                .priority(priority(triggerDefinitionApi))
+                .priority(priority(triggerDefinitionApi.getPriority()))
                 .timeZone(defaultTimeZone(triggerDefinitionApi.getTimeZone()))
                 .cronExpression(cronExpression)
                 .jobDataMap(nullSafeJobDataMap(triggerDefinitionApi.getJobDataMap()))
@@ -132,13 +126,33 @@ public class Mapper {
     }
 
     private static String triggerName(@NonNull String jobName, @NonNull String triggerName, int scheduleNumber) {
-        if (StringUtils.startsWith(triggerName, jobName + ".")){
+        if (StringUtils.startsWith(triggerName, jobName + ".")) {
             return triggerName;
         }
         String name = jobName + "." + triggerName + "." + scheduleNumber;
         return StringUtils.truncate(name, MAX_TRIGGER_NAME_LENGTH);
     }
 
+    private static List<DependencyDefinition> toDependencies(JobKey jobKey, JobDefinitionApi job) {
+        return job.getDependencies().stream().map(dependency -> toDependency(jobKey, dependency)).collect(Collectors.toList());
+    }
+
+    private static DependencyDefinition toDependency(JobKey parentJobKey, DependencyDefinitionApi dependency) {
+        String childGroup = Objects.requireNonNullElse(dependency.getChildJobGroup(), parentJobKey.getGroup());
+        return DependencyDefinition.builder()
+                .name(dependency.getName())
+                .jobDataMap(nullSafeJobDataMap(dependency.getJobDataMap()))
+                .childJob(JobKey.jobKey(dependency.getChildJobName(), childGroup))
+                .priority(priority(dependency.getPriority()))
+                .notBefore(parseZonedTime(dependency.getNotBefore()))
+                .secondsDelay(Objects.requireNonNullElse(dependency.getSecondsDelay(), 0))
+                .parentErrorIgnored(dependency.isIgnoreParentError())
+                .build();
+    }
+
+    private static ZonedTime parseZonedTime(String string) {
+        return string == null ? null : ZonedTime.parse(string);
+    }
 
     /**
      * @param jobDefinition The job definition
@@ -148,6 +162,7 @@ public class Mapper {
         Boolean recover = jobDefinition.getRecover();
         return recover != null && recover;
     }
+
     private static boolean durable(JobDefinitionApi jobDefinition) {
         Boolean durable = jobDefinition.getDurable();
         return durable == null || durable;
@@ -158,7 +173,7 @@ public class Mapper {
         return misfireExecution != null && misfireExecution;
     }
 
-    public static int priority(TriggerDefinitionApi triggerDefinitionApi) {
-        return Objects.requireNonNullElse(triggerDefinitionApi.getPriority(), Trigger.DEFAULT_PRIORITY);
+    public static int priority(Integer priority) {
+        return Objects.requireNonNullElse(priority, Trigger.DEFAULT_PRIORITY);
     }
 }

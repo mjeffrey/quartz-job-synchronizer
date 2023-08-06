@@ -1,7 +1,10 @@
 package be.sysa.quartz.initializer.fixtures;
 
+import be.sysa.quartz.initializer.api.DependencyDefinitionApi;
 import be.sysa.quartz.initializer.api.JobDefinitionApi;
 import be.sysa.quartz.initializer.api.TriggerDefinitionApi;
+
+import java.util.List;
 
 public class ScheduleFixture {
     public static JobDefinitionApi maximalJob(){
@@ -12,8 +15,23 @@ public class ScheduleFixture {
                 .jobData("Key1", "value1")
                 .jobData("Key2", 2)
                 .trigger(maximalTrigger())
+                .dependencies(maximalDependency())
                 .build();
     }
+
+    private static List<DependencyDefinitionApi> maximalDependency() {
+        return List.of(
+                DependencyDefinitionApi.builder()
+                        .name("minimalJob")
+                        .childJobName("minimal")
+                        .childJobGroup("minimal")
+                        .jobData("key1", "key2")
+                        .secondsDelay(3)
+                        .ignoreParentError(true)
+                        .build()
+        );
+    }
+
     public static TriggerDefinitionApi maximalTrigger(){
         return TriggerDefinitionApi.builder()
                 .name("FileGeneration")

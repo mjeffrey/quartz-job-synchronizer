@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +28,18 @@ public class JobDefinitionApi {
     @Singular
     List<TriggerDefinitionApi> triggers;
 
+    @Singular
+    List<DependencyDefinitionApi> dependencies;
+
     @Singular("jobData")
     @JsonProperty("job-data-map")
     Map<String, Object> jobDataMap;
 
+    public List<TriggerDefinitionApi> getTriggers() {
+        return triggers == null ? Collections.emptyList() : triggers;
+    }
+
+    public List<DependencyDefinitionApi> getDependencies() {
+        return dependencies == null ? Collections.emptyList() : dependencies;
+    }
 }
