@@ -29,7 +29,7 @@ jobs:
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: Publish to Apache Maven Central
-        run: mvn -B deploy -P ossrhDeploy -DskipTests -Drevision=${{ env.RELEASE_VERSION }}
+        run: mvn -B deploy -PossrhDeploy -DskipTests -Drevision=${{ env.RELEASE_VERSION }} -projects quartz-job-synchronizer,cron-description,cron-description-api
         env:
           MAVEN_USERNAME: a+ylMfU5
           MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
