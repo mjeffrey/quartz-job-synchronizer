@@ -1,0 +1,31 @@
+schedule:
+  - group: "minimal"
+    jobs:
+      - job-name: "ChildJob"
+        job-class: "be.sysa.quartz.jobs.ChildJob"
+  - group: "maximal"
+    jobs:
+      - job-name: "MaximalJob"
+        job-class: "be.sysa.quartz.jobs.SampleJob"
+        recover: false
+        durable: false
+        job-data-map:
+          Key5: "value"
+          Key2: 2
+        triggers:
+          - name: "MaximalJob.FileGeneration.1"
+            trigger-group: "triggerGroup"
+            misfire-execution: true
+            description: "Every minute"
+            priority: 10
+            time-zone: "Europe/Brussels"
+            expressions:
+              - "0,10,20,30,40,50 * * ? * * *"
+            job-data-map:
+              datakey1: "valueX"
+              datakey2: 0.123
+        dependencies:
+          - name: "MaximalJob Finished"
+            not-before: 15:22 Europe/Paris
+            child-job-group: "minimal"
+            child-job-name: "ChildJob"

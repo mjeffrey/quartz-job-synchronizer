@@ -1,0 +1,28 @@
+spring:
+  quartz:
+    properties:
+      org:
+        quartz:
+          jobStore:
+            class: "org.springframework.scheduling.quartz.LocalDataSourceJobStore"
+            dataSource: datasource
+            isClustered: true
+          scheduler:
+            instanceName: sb3
+            instanceId: AUTO
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 5
+          plugin:
+            jobSynchronizer:
+              class: "be.sysa.quartz.initializer.YamlJobSynchronizerPlugin"
+              fileNames: "classpath:jobs.yaml" #, classpath:ibis-jobs.yaml
+
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: always
+  datasource:
+    url: "jdbc:h2:mem:mydb"
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
