@@ -8,6 +8,7 @@
     </parent>
 
     <artifactId>quartz-job-synchronizer</artifactId>
+    <name>Quartz Job Synchronizer</name>
     <version>${revision}</version>
 
     <dependencies>
