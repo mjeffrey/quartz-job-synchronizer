@@ -172,6 +172,11 @@
     <profiles>
         <profile>
             <id>ossrhDeploy</id>
+            <modules>
+                <module>cron-description</module>
+                <module>cron-description-api</module>
+                <module>quartz-job-synchronizer</module>
+            </modules>
             <distributionManagement>
                 <snapshotRepository>
                     <id>ossrh</id>
