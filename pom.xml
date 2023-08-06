@@ -15,7 +15,7 @@
         <module>cron-description</module>
         <module>cron-description-api</module>
         <module>quartz-job-synchronizer</module>
-        <module>examples</module>
+<!--        <module>examples</module>-->
     </modules>
     <properties>
         <revision>local</revision>
