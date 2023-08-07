@@ -6,10 +6,11 @@
         <artifactId>parent</artifactId>
         <version>${revision}</version>
     </parent>
-
     <artifactId>quartz-job-synchronizer</artifactId>
-    <name>Quartz Job Synchronizer</name>
     <version>${revision}</version>
+    <name>Quartz Job Synchronizer</name>
+    <url>${base.url}</url>
+    <description>Quartz plugin to define jobs</description>
 
     <dependencies>
         <dependency>

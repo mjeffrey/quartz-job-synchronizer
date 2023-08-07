@@ -3,17 +3,18 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <artifactId>cron-description-api</artifactId>
-    <name>API for getting a cron description</name>
-    <version>${revision}</version>
-    <packaging>jar</packaging>
-    <description>Demo project for Scheduling in Spring with Quartz</description>
     <parent>
         <groupId>be.sysa.quartz-job-synchronizer</groupId>
         <artifactId>parent</artifactId>
         <version>${revision}</version>
     </parent>
+
+    <artifactId>cron-description-api</artifactId>
+    <version>${revision}</version>
+    <name>API for getting a cron description</name>
+    <url>${base.url}</url>
+    <description>Demo project for Scheduling in Spring with Quartz</description>
+
     <dependencies>
     </dependencies>
 

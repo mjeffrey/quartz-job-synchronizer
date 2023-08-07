@@ -11,7 +11,7 @@
     <description>
         A simple Quartz plugin to make it easier to define and maintain quartz jobs and triggers at startup.
     </description>
-    <url>https://github.com/mjeffrey/quartz-job-synchronizer</url>
+    <url>${base.url}</url>
     <licenses>
         <license>
             <name>The Apache License, Version 2.0</name>
@@ -27,10 +27,9 @@
         </developer>
     </developers>
     <scm>
-        <connection>scm:git:git://github.com/mjeffrey/.git</connection>
+        <connection>scm:git:git://github.com/mjeffrey/quartz-job-synchronizer.git</connection>
         <developerConnection>scm:git:ssh://github.com:mjeffrey/quartz-job-synchronizer.git</developerConnection>
-        <url>https://github.com/mjeffrey/quartz-job-synchronizer.git</url>
-        <tag>develop</tag>
+        <url>https://github.com/mjeffrey/quartz-job-synchronizer/tree/main</url>
     </scm>
 
     <modules>
@@ -44,7 +43,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <javac.target>11</javac.target>
         <rootDir>${maven.multiModuleProjectDirectory}</rootDir>
-
+        <base.url>https://github.com/mjeffrey/quartz-job-synchronizer</base.url>
         <minimum-maven.version>3.6.0</minimum-maven.version>
         <assertj-core.version>3.24.2</assertj-core.version>
         <commons-lang3.version>3.13.0</commons-lang3.version>
