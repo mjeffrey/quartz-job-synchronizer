@@ -2,6 +2,7 @@ package be.sysa.quartz.initializer.service;
 
 import be.sysa.quartz.initializer.model.*;
 import be.sysa.quartz.initializer.support.ComparisonSupport;
+import be.sysa.quartz.initializer.support.CronDescriptionService;
 import be.sysa.quartz.initializer.support.SetUtils;
 import lombok.SneakyThrows;
 import lombok.Value;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 
 import static be.sysa.quartz.initializer.support.SetUtils.intersection;
 import static be.sysa.quartz.initializer.support.SetUtils.minus;
+import static java.util.Objects.requireNonNullElseGet;
 
 @Value
 @Slf4j
@@ -116,24 +118,23 @@ public class JobSynchronizer {
         triggersToUpdate.forEach(triggerKey -> updateTriggerIfChanged(newTriggers.get(triggerKey)));
     }
 
-    @SneakyThrows
-    private void updateTriggerIfChanged(TriggerDefinition triggerDefinition) {
-        TriggerKey triggerKey = triggerDefinition.getTriggerKey();
-        Trigger trigger = scheduleAccessor.getTrigger(triggerKey);
-        if (ComparisonSupport.triggerChanged(trigger, triggerDefinition)) {
-            CronTrigger cronTrigger = createTrigger(triggerDefinition);
-            scheduleAccessor.rescheduleJob(triggerKey, cronTrigger);
-            if (triggerDefinition.isMisfireExecution() && trigger.getNextFireTime().before(new Date())) {
-                log.warn("Trigger {} for job {} has missed its fire time. Scheduling the job now",
-                        triggerKey.getName(),
-                        trigger.getJobKey().getName());
-                scheduleAccessor.scheduleJob(TriggerBuilder.newTrigger()
-                                .withIdentity(triggerDefinition.getTriggerKey().getName(), "startup")
-                        .forJob(trigger.getJobKey())
-                        .startNow()
-                        .build());
-            }
+    private static CronTrigger createTrigger(TriggerDefinition triggerDefinition) {
+        JobDataMap triggerJobData = new JobDataMap(triggerDefinition.getJobDataMap());
+        CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(triggerDefinition.getCronExpression())
+                .inTimeZone(triggerDefinition.getTimeZone());
+        if (triggerDefinition.isMisfireExecution()) {
+            scheduleBuilder.withMisfireHandlingInstructionFireAndProceed();
         }
+
+        String description = getDescription(triggerDefinition);
+        return TriggerBuilder.newTrigger()
+                .forJob(triggerDefinition.getJobkey())
+                .usingJobData(triggerJobData)
+                .withDescription(description)
+                .withIdentity(triggerDefinition.getTriggerKey())
+                .withSchedule(scheduleBuilder)
+                .withPriority(triggerDefinition.getPriority())
+                .build();
     }
 
     private void addNewTriggers(Set<TriggerKey> existingTriggers, Map<TriggerKey, TriggerDefinition> newTriggers) {
@@ -141,20 +142,10 @@ public class JobSynchronizer {
         triggersToAdd.forEach(triggerKey -> addTrigger(newTriggers.get(triggerKey)));
     }
 
-    @SneakyThrows
-    private void addDependentJobTriggers(JobDefinition jobDefinition) {
-        JobKey parentJobKey = jobDefinition.getJobKey();
-        ListenerManager listenerManager = scheduleAccessor.getListenerManager();
-
-        for (DependencyDefinition dependency : jobDefinition.getDependencies()) {
-            JobKey childJobKey = dependency.getChildJob();
-            log.info("Adding job listener, on completion of job {}, the job {} will run",
-                    parentJobKey,
-                    childJobKey
-            );
-            listenerManager.addJobListener(DependentJobListener.create(dependency),
-                    jobKey->jobKey.equals(parentJobKey));
-        }
+    private static String getDescription(TriggerDefinition triggerDefinition) {
+        return requireNonNullElseGet(triggerDefinition.getDescription(),
+                () -> CronDescriptionService.instance()
+                        .getDescription(triggerDefinition.getCronExpression()));
     }
 
     private void removeObsoleteTriggers(Set<TriggerKey> existingTriggers, Map<TriggerKey, TriggerDefinition> newTriggers) {
@@ -190,29 +181,52 @@ public class JobSynchronizer {
     }
 
     @SneakyThrows
-    private void addTrigger(TriggerDefinition triggerDefinition) {
-        CronTrigger cronTrigger = createTrigger(triggerDefinition);
-        log.info("Adding trigger: {} {}", cronTrigger.getKey(), cronTrigger.getCronExpression());
-        scheduleAccessor.scheduleJob(cronTrigger);
+    private void updateTriggerIfChanged(TriggerDefinition triggerDefinition) {
+        TriggerKey triggerKey = triggerDefinition.getTriggerKey();
+        Trigger trigger = scheduleAccessor.getTrigger(triggerKey);
+        if (ComparisonSupport.triggerChanged(trigger, triggerDefinition)) {
+            CronTrigger cronTrigger = createTrigger(triggerDefinition);
+            scheduleAccessor.rescheduleJob(triggerKey, cronTrigger);
+            if (triggerDefinition.isMisfireExecution() && trigger.getNextFireTime().before(new Date())) {
+                log.warn("Trigger {} for job {} has missed its fire time. Scheduling the job now",
+                        triggerKey.getName(),
+                        trigger.getJobKey().getName());
+                scheduleAccessor.scheduleJob(TriggerBuilder.newTrigger()
+                        .withIdentity(triggerDefinition.getTriggerKey().getName(), "startup")
+                        .forJob(trigger.getJobKey())
+                        .startNow()
+                        .build());
+            }
+        }
     }
 
-    private static CronTrigger createTrigger(TriggerDefinition triggerDefinition) {
-        JobDataMap triggerJobData = new JobDataMap(triggerDefinition.getJobDataMap());
-        CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(triggerDefinition.getCronExpression())
-                .inTimeZone(triggerDefinition.getTimeZone());
-        if (triggerDefinition.isMisfireExecution()) {
-            scheduleBuilder.withMisfireHandlingInstructionFireAndProceed();
-        }
+    @SneakyThrows
+    private void addDependentJobTriggers(JobDefinition jobDefinition) {
+        JobKey parentJobKey = jobDefinition.getJobKey();
+        ListenerManager listenerManager = scheduleAccessor.getListenerManager();
 
-        String description = triggerDefinition.getDescription();
-        return TriggerBuilder.newTrigger()
-                .forJob(triggerDefinition.getJobkey())
-                .usingJobData(triggerJobData)
-                .withDescription(description)
-                .withIdentity(triggerDefinition.getTriggerKey())
-                .withSchedule(scheduleBuilder)
-                .withPriority(triggerDefinition.getPriority())
-                .build();
+        for (DependencyDefinition dependency : jobDefinition.getDependencies()) {
+            JobKey childJobKey = dependency.getChildJob();
+            log.info("Adding job listener, on completion of job {}, the job {} will run",
+                    parentJobKey,
+                    childJobKey
+            );
+            listenerManager.addJobListener(DependentJobListener.create(dependency),
+                    jobKey -> jobKey.equals(parentJobKey));
+        }
+    }
+
+    @SneakyThrows
+    private void addTrigger(TriggerDefinition triggerDefinition) {
+        CronTrigger cronTrigger = createTrigger(triggerDefinition);
+        String description = CronDescriptionService.instance().getDescription(cronTrigger.getCronExpression());
+        log.info("Adding trigger: {} cron='{}'",
+                cronTrigger.getKey(),
+                cronTrigger.getCronExpression());
+        if (description != null) {
+            log.info("===> {}, zone={}", description, triggerDefinition.getTimeZone().toZoneId());
+        }
+        scheduleAccessor.scheduleJob(cronTrigger);
     }
 
     private void addNewJobs(Set<JobKey> existingJobs, Map<JobKey, JobDefinition> newJobs) {

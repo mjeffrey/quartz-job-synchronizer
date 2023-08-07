@@ -16,14 +16,17 @@ schedule:
           - name: "MaximalJob.FileGeneration.1"
             trigger-group: "triggerGroup"
             misfire-execution: true
-            description: "Every minute"
+            description: "Trigger Description"
             priority: 10
             time-zone: "Europe/Brussels"
             expressions:
-              - "0,10,20,30,40,50 * * ? * * *"
+              - "0,11 0,30 5-20 ? * MON,TUE *"
             job-data-map:
               datakey1: "valueX"
               datakey2: 0.123
+          - name: "MaximalJob.FileGeneration.2"
+            expressions:
+              - "0 0 5-20 ? * SAT,SUN *"
         dependencies:
           - name: "MaximalJob Finished"
             not-before: 15:22 Europe/Paris

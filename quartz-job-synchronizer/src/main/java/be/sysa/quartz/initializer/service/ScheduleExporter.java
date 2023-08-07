@@ -5,17 +5,13 @@ import be.sysa.quartz.initializer.api.GroupDefinitionApi;
 import be.sysa.quartz.initializer.api.JobDefinitionApi;
 import be.sysa.quartz.initializer.api.ScheduleDefinitionApi;
 import be.sysa.quartz.initializer.api.TriggerDefinitionApi;
+import be.sysa.quartz.initializer.support.CronDescriptionService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.quartz.CronTrigger;
-import org.quartz.JobDetail;
-import org.quartz.JobKey;
-import org.quartz.Scheduler;
-import org.quartz.Trigger;
-import org.quartz.TriggerKey;
+import org.quartz.*;
 
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -23,7 +19,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
-import java.util.ServiceLoader;
 
 @Value
 @Slf4j
@@ -78,7 +73,7 @@ public class ScheduleExporter {
     }
 
     private TriggerDefinitionApi readCronTrigger(Trigger trigger) {
-        CronDescription cronDescription = getCronDescription();
+        CronDescription cronDescription = CronDescriptionService.instance();
 
         CronTrigger cronTrigger = (CronTrigger) trigger;
         TriggerKey triggerKey = trigger.getKey();
@@ -93,10 +88,6 @@ public class ScheduleExporter {
                 .triggerGroup(getTriggerGroup(trigger.getJobKey(), triggerKey))
                 .jobDataMap(cronTrigger.getJobDataMap())
                 .build();
-    }
-
-    private static CronDescription getCronDescription() {
-        return ServiceLoader.load(CronDescription.class).findFirst().orElseGet(() -> cron -> null);
     }
 
     private static final String HEADER_TEMPLATE =
