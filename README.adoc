@@ -19,6 +19,7 @@ It is meant as a replacement for Quartz XML Job plugin provided by Quartz and us
 ** Can export the schedule (no need to write it by hand): the YAML file can be generated from existing jobs and triggers
 
 === Miscellaneous
+
 ** Can convert an exising XML file to a YAML file.
 ** The YAML structure is less verbose (approx half the number of lines)
 ** Triggers are listed hierarchically under the jobs they belong to (triggers and jobs are inconveniently separate in XML plugin)
@@ -28,21 +29,27 @@ It is meant as a replacement for Quartz XML Job plugin provided by Quartz and us
 ** There is a JSON schema so the IDE can help write and validate the file (the XML plugin also has this)
 ** Simplified "misfire" handling: true or false
 
+== Documentation
+
+* link:docs/configuration.adoc[Configuration Reference]
+* link:docs/yaml-definitions.adoc[Schedule Definitions]
+
 == Problems with the XML plugin provided with Quartz
 
-The provided XML plugin has some problems when you want to modify jobs or their schedule that can result in missed or unwanted executions. 
+The provided XML plugin has some problems when you want to modify jobs or their schedule that can result in missed or unwanted executions.
 
 - The plugin will only add/replace jobs and triggers, if you change the name of a Job you will effectively have a duplicate with unforeseen consequences.
 - The same applies to a trigger, renaming a trigger will mean you have multiple triggers.
 Since the trigger is replaced each time, any triggers that have miss their fire time are deleted (and not executed).
 * To work around this, it is possible to just delete all jobs and then add all jobs again.
-This works, but it can result in missed executions or deleting a misfired trigger or even a job being executed. In a cloud environment where there are multiple elastic instances this can be happening often.
+This works, but it can result in missed executions or deleting a misfired trigger or even a job being executed.
+In a cloud environment where there are multiple elastic instances this can be happening often.
 
 === Limitations
 
 The YAML plugin does not support the following XMl plugin features:
 
-- Refresh of the schedule by changing the XML file. This is usually a non issue since the schedule is usually packaged with the application.
+- Refresh of the schedule by changing the XML file.This is usually a non issue since the schedule is usually packaged with the application.
 - Triggers other than CRON but any (configurable) trigger can be implemented as a CRON trigger
 
 == Installing
@@ -137,7 +144,7 @@ XmlYamlConverter:
 
 == Versioning
 
-We use http://semver.org/[SemVer] for versioning. For the versions available, see the https://github.com/your/project/tags[tags on this repository]. 
+We use http://semver.org/[SemVer] for versioning. For the versions available, see the https://github.com/your/project/tags[tags on this repository].
 
 == Authors
 

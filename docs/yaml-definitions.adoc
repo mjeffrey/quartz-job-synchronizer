@@ -1,0 +1,126 @@
+= YAML Definitions
+
+.Example
+```yaml
+schedule:
+  - group: "maximal"
+    jobs:
+      - job-name: "MaximalJob"
+        job-class: "be.sysa.quartz.jobs.SampleJob"
+        recover: true
+        durable: true
+        job-data-map:
+          Key2: "2"
+          Key5: "value1"
+        triggers:
+          - trigger-name: "FileGeneration"
+            trigger-group: "triggerGroup"
+            time-zone: "Europe/Brussels"
+            expressions:
+              - "0 0/10 4-16 * * MON-SAT" # Every 10 minutes, between 04:00 AM and 04:59 PM, Monday through Saturday
+              - "0 0,5,10,15 17 * * MON-SAT"   # At 0, 5, 10, and 15 minutes past the hour, at 05:00 PM, Monday through Saturday
+            description: "Not Sunday. Once every 10 minutes between 04:00 and 16:50. Every 5 minutes between 17:00 an 17:55"
+            misfire-execution: true
+            priority: 10
+            job-data-map:
+              datakey2: "0.123"
+              datakey1: "valueX"
+  - group: "minimal"
+    jobs:
+      - job-name: "MinimalJob"
+        job-class: "be.sysa.quartz.jobs.SampleJob"
+        triggers:
+          - trigger-name: "FileGeneration"
+            expressions:
+              - "0 0 2 ? * MON,TUE,WED,THU,FRI *"
+
+
+```
+
+.YAML Group Descriptions
+[cols=3*,stripes=even]
+[%autowidth]
+|===
+| Element | Description | Notes
+
+| schedule
+| Describes a schedule (a set of Groups)
+| May only occur once in a document
+
+| group
+| Name of the group
+| Must be unique. An exception is thrown if it is repeated TODO CHECK
+
+| jobs
+| Set of Jobs
+|
+|===
+
+.YAML Job Descriptions
+[cols=3*,stripes=even]
+[%autowidth]
+|===
+| Element | Description | Notes
+| job-name
+| Name of the job
+| Must be unique within the group
+
+| job-class
+| The fully qualified java class name of the quartz Job
+| This class must be able to be located at initialization otherwise an exception id thrown.
+
+| recover
+| If the Job should be re-executed if a 'recovery' or 'fail-over' situation is encountered. For example if the instance crashes during Job Execution
+| Default is false TODO verify behaviour
+
+| durable
+| If the Job should remain stored after it is orphaned (no Triggers point to it).
+| Default is false and is usually not relevant for these pre-defined jobs
+
+| job-data-map
+| Key Value parameter map provided to the Job when it is executed. Can be used to reuse the same job class, but probably better to create dedicated job classes.
+| Can also be set on the triggers
+
+| triggers
+| List of triggers
+| Usually only one is needed (unless you want a different job-data-map for each execution) since multiple cron expressions are permitted.
+
+|===
+
+.YAML Job Descriptions
+[cols=3*,stripes=even]
+[%autowidth]
+|===
+| Element | Description | Notes
+| trigger-name
+| Name of the trigger
+| Must be unique within the trigger group
+
+| trigger-group
+| Name of the trigger group
+| Optional, will default to the job group
+
+| time-zone
+| Time zone for the cron expression
+| Examples America/New_York Europe/Paris. Default is UTC. See https://en.wikipedia.org/wiki/Tz_database[wikipedia]. Corresponds with Java ZoneId. Care must be taken when scheduling an execution within the daylight savings time change. Quartz behaviour is undefined and may cause zero, one or two executions, and it may be release dependent. This value is case-sensitive. If not found there will be an Exception.
+
+| expressions
+| Quartz cron expressions.
+| See the quartz documentation and this https://freeformatter.com/cron-expression-generator-quartz.html[generator]. For example "0 * * ? * * *". Multiple expressions are permitted.
+
+| description
+| To document the trigger
+| Often it is good to include a human friendly description of the quartz cron expression(s).
+
+| misfire-execution
+| Boolean, default false. Execute the trigger if it has missed its scheduled time.
+| This is a simplified version of the quartz misfire setting. When an application is (re)started, if there is a trigger scheduled in the past, it will be executed when misfire-execution is set to true. Note there is also a jobstore setting "misfireThreshold", default is 60 seconds in the past to be considered a "misfire" see https://www.quartz-scheduler.org/documentation/quartz-2.3.0/configuration/ConfigJobStoreTX.html[quartz configuration]
+
+| priority
+| Execution priority
+| See quartz documentation.
+
+| job-data-map
+| Same as the map attached to a job.
+| Can be used to execute the same jobs with different parameters. For example a File Download job could download different typess of files at certain times. The maps are merged during execution, ther trigger map overriding the job map values.
+|===

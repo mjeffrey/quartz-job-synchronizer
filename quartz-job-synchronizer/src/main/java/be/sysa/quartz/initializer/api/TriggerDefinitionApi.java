@@ -1,6 +1,7 @@
 package be.sysa.quartz.initializer.api;
 
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Singular;
@@ -12,6 +13,9 @@ import java.util.Map;
 @Value
 @Builder(toBuilder = true)
 public class TriggerDefinitionApi {
+
+    @JsonAlias({"trigger-name", "name"}) // allow "name"
+    @JsonProperty("trigger-name")
     String name;
 
     @JsonProperty("trigger-group")
