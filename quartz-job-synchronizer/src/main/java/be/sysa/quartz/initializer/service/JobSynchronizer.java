@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 
 import static be.sysa.quartz.initializer.support.SetUtils.intersection;
 import static be.sysa.quartz.initializer.support.SetUtils.minus;
-import static java.util.Objects.requireNonNullElseGet;
 
 @Value
 @Slf4j
@@ -143,8 +142,8 @@ public class JobSynchronizer {
     }
 
     private static String getDescription(TriggerDefinition triggerDefinition) {
-        return requireNonNullElseGet(triggerDefinition.getDescription(),
-                () -> CronDescriptionService.instance()
+        return Optional.ofNullable(triggerDefinition.getDescription())
+                .orElse(CronDescriptionService.instance()
                         .getDescription(triggerDefinition.getCronExpression()));
     }
 
