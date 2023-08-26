@@ -27,7 +27,7 @@ public class ScheduleLoaderTest {
                     .hasGroup("maximal")
                     .hasJob("MaximalJob");
             TriggerDefinitionApiAssert triggerAssert = jobAssert
-                    .jobClass("be.sysa.quartz.jobs.SampleJob")
+                    .jobClass("be.sysa.quartz.initializer.fixtures.jobs.MyTestJob")
                     .hasTriggers("FileGeneration", "trigger2")
                     .recover(true)
                     .durable(false)

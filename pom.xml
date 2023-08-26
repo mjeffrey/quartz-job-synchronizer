@@ -42,6 +42,8 @@
         <revision>local</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <javac.target>11</javac.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <rootDir>${maven.multiModuleProjectDirectory}</rootDir>
         <base.url>https://github.com/mjeffrey/quartz-job-synchronizer</base.url>
         <minimum-maven.version>3.6.0</minimum-maven.version>
@@ -50,7 +52,7 @@
         <cron-expression-descriptor.version>1.2.6</cron-expression-descriptor.version>
         <jackson.version>2.15.2</jackson.version>
         <jsonassert.version>1.5.1</jsonassert.version>
-        <junit.version>5.10.0</junit.version>
+        <junit.version>5.9.1</junit.version>
         <lombok.version>1.18.28</lombok.version>
         <mockito.version>5.4.0</mockito.version>
         <nimbus-jose-jwt.version>9.4.1</nimbus-jose-jwt.version>
@@ -192,6 +194,17 @@
 
     <profiles>
         <profile>
+            <id>coverage</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>ossrhDeploy</id>
             <distributionManagement>
                 <snapshotRepository>
@@ -239,33 +252,6 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>coverage</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.jacoco</groupId>
-                        <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>0.8.10</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>prepare-agent</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>generate-code-coverage-report</id>
-                                <phase>test</phase>
-                                <goals>
-                                    <goal>report</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
     </profiles>
     <build>
         <plugins>
@@ -408,6 +394,20 @@
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>${jacoco-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>prepare-agent</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>generate-code-coverage-report</id>
+                            <phase>test</phase>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>

@@ -2,6 +2,7 @@ package be.sysa.quartz.initializer.model;
 
 
 import lombok.Builder;
+import lombok.Singular;
 import lombok.ToString;
 import lombok.Value;
 import org.quartz.JobKey;
@@ -29,6 +30,7 @@ public class TriggerDefinition {
     @ToString.Exclude
     TimeZone timeZone;
 
+    @Singular("jobData")
     Map<String, Object> jobDataMap;
 
 }

@@ -2,6 +2,7 @@ package be.sysa.quartz.initializer.service;
 
 import be.sysa.quartz.initializer.model.DependencyDefinition;
 import be.sysa.quartz.initializer.model.ZonedTime;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -40,25 +41,16 @@ public class DependentJobListener implements JobListener {
                                JobExecutionException jobException) {
         JobKey parentJobKey = context.getJobDetail().getKey();
         JobKey childJobKey = dependency.getChildJob();
-        if (jobException != null) {
-            if (dependency.isParentErrorIgnored()) {
-                log.info("Ignoring exception in parent job {}: {}",
-                        parentJobKey,
-                        jobException.getCause().getMessage());
-            } else {
-                log.error("Not scheduling job: {} due to exception in parent job: {} ",
-                        childJobKey,
-                        parentJobKey,
-                        jobException.getCause());
-                return;
-            }
+        if (abortOnParentException(jobException, parentJobKey, childJobKey)) {
+            return;
         }
         Scheduler scheduler = context.getScheduler();
-        StartTime startTime = new StartTime(context, dependency);
+        StartTime startTime = new StartTime(dependency, context.getFireTime().toInstant(), Instant.now());
         Trigger trigger = TriggerBuilder.newTrigger().forJob(childJobKey)
                 .usingJobData(new JobDataMap(dependency.getJobDataMap()))
+                .withIdentity(dependency.getChildJob().getGroup())
                 .withPriority(dependency.getPriority())
-                .startAt(startTime.getStart())
+                .startAt(Date.from(startTime.getStart()))
                 .build();
         log.debug("Triggering job {} as a result of {} startTime: {}",
                 childJobKey,
@@ -68,44 +60,59 @@ public class DependentJobListener implements JobListener {
         scheduler.scheduleJob(trigger);
     }
 
-    private static class StartTime {
-        private Instant start;
-        private boolean isImmediate;
-
-        public Date getStart() {
-            return Date.from(start);
+    private boolean abortOnParentException(JobExecutionException jobException, JobKey parentJobKey, JobKey childJobKey) {
+        if (jobException != null) {
+            Throwable cause = jobException.getCause();
+            if (dependency.isParentErrorIgnored()) {
+                log.info("Ignoring exception in parent job {}: {}",
+                        parentJobKey,
+                        cause == null ? jobException.getMessage() : cause.getMessage());
+            } else {
+                log.error("Not scheduling job: {} due to exception in parent job: {} ",
+                        childJobKey,
+                        parentJobKey,
+                        cause);
+                return true;
+            }
         }
+        return false;
+    }
+
+    @Override
+    public void jobExecutionVetoed(JobExecutionContext context) {
+        log.debug("Job Vetoed {}", context.getJobDetail().getKey());
+    }
+
+    static class StartTime {
+        @Getter
+        private Instant start;
+        @Getter
+        private boolean isImmediate;
 
         @Override
         public String toString() {
             return isImmediate ? "IMMEDIATE" : start.toString();
         }
 
-        public StartTime(JobExecutionContext context, DependencyDefinition dependency) {
+        public StartTime(DependencyDefinition dependency, Instant parentFireTime, Instant now) {
             ZonedTime notBefore = dependency.getNotBefore();
-            final Instant now = Instant.now();
             start = now;
             isImmediate = true;
             if (notBefore != null) {
-                Instant fireTime = context.getFireTime().toInstant();
-                LocalDate localDate = LocalDate.ofInstant(fireTime, notBefore.getZoneId());
+                LocalDate localDate = LocalDate.ofInstant(parentFireTime, notBefore.getZoneId());
                 Instant notBeforeInstant = ZonedDateTime.of(localDate, notBefore.getLocalTime(), notBefore.getZoneId()).toInstant();
                 if (now.isBefore(notBeforeInstant)) {
                     start = notBeforeInstant;
                     isImmediate = false;
                 }
-            }else{
+            } else {
                 int secondsDelay = dependency.getSecondsDelay();
-                if ( secondsDelay > 0 ){
-                    start = now.plusSeconds(dependency.getSecondsDelay());
+                if (secondsDelay > 0) {
+                    start = now.plusSeconds(secondsDelay);
                     isImmediate = false;
                 }
             }
         }
     }
 
-    @Override
-    public void jobExecutionVetoed(JobExecutionContext context) {
-        // do something with the event
-    }
 }

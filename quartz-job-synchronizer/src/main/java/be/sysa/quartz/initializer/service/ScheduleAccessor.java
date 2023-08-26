@@ -42,6 +42,10 @@ public class ScheduleAccessor {
     Trigger getTrigger(TriggerKey triggerKey) {
         return scheduler.getTrigger(triggerKey);
     }
+    @SneakyThrows
+    Trigger.TriggerState getTriggerState(TriggerKey triggerKey) {
+        return scheduler.getTriggerState(triggerKey);
+    }
 
 
     // ====================== Add jobs/triggers ======================

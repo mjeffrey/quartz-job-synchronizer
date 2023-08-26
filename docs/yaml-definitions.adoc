@@ -34,7 +34,6 @@ schedule:
             expressions:
               - "0 0 2 ? * MON,TUE,WED,THU,FRI *"
 
-
 ```
 
 .YAML Group Descriptions
@@ -49,7 +48,7 @@ schedule:
 
 | group
 | Name of the group
-| Must be unique. An exception is thrown if it is repeated TODO CHECK
+| Must be unique. An exception is thrown if it is repeated
 
 | jobs
 | Set of Jobs
@@ -114,7 +113,7 @@ schedule:
 
 | misfire-execution
 | Boolean, default false. Execute the trigger if it has missed its scheduled time.
-| This is a simplified version of the quartz misfire setting. When an application is (re)started, if there is a trigger scheduled in the past, it will be executed when misfire-execution is set to true. Note there is also a jobstore setting "misfireThreshold", default is 60 seconds in the past to be considered a "misfire" see https://www.quartz-scheduler.org/documentation/quartz-2.3.0/configuration/ConfigJobStoreTX.html[quartz configuration]
+| This is a simplified version of the quartz misfire setting. When an application is (re)started, if there is a trigger scheduled in the past, it will be executed when misfire-execution is set to true. Note there is also a Job Store setting "misfireThreshold", default is 60 seconds in the past to be considered a "misfire" see https://www.quartz-scheduler.org/documentation/quartz-2.3.0/configuration/ConfigJobStoreTX.html[quartz configuration]
 
 | priority
 | Execution priority
@@ -122,5 +121,5 @@ schedule:
 
 | job-data-map
 | Same as the map attached to a job.
-| Can be used to execute the same jobs with different parameters. For example a File Download job could download different typess of files at certain times. The maps are merged during execution, ther trigger map overriding the job map values.
+| Can be used to execute the same jobs with different parameters. For example a File Download job could download different types of files at certain times. The maps are merged during execution, the trigger map overriding the job map values.
 |===

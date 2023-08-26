@@ -2,6 +2,7 @@ package be.sysa.quartz.initializer.model;
 
 
 import lombok.Builder;
+import lombok.Singular;
 import lombok.Value;
 import org.quartz.JobKey;
 
@@ -16,5 +17,7 @@ public class DependencyDefinition {
     int secondsDelay;
     ZonedTime notBefore;
     boolean parentErrorIgnored;
+
+    @Singular("jobData")
     Map<String, Object> jobDataMap;
 }

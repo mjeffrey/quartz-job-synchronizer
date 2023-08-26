@@ -1,6 +1,7 @@
 package be.sysa.quartz.initializer.model;
 
 import be.sysa.quartz.initializer.api.*;
+import be.sysa.quartz.initializer.support.Errors;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -15,6 +16,9 @@ import java.time.ZoneOffset;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static be.sysa.quartz.initializer.support.ValidatorUtils.assertCronExpressionValid;
+import static be.sysa.quartz.initializer.support.ValidatorUtils.assertTimezoneValid;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Mapper {
@@ -31,7 +35,10 @@ public class Mapper {
     private static Map<String, GroupDefinition> toGroups(ScheduleDefinitionApi scheduleDefinitionApi) {
         return scheduleDefinitionApi.getGroups().stream()
                 .map(Mapper::toGroup)
-                .collect(Collectors.toMap(GroupDefinition::getName, Function.identity()));
+                .collect(Collectors.toMap(GroupDefinition::getName, Function.identity(),
+                        (group1, group2) -> {
+                            throw Errors.DUPLICATE_GROUPS.toException("Group '%s' appears twice in the schedule.", group1.getName());}
+                        ));
     }
 
     private static GroupDefinition toGroup(GroupDefinitionApi groupDefinitionApi) {
@@ -70,22 +77,33 @@ public class Mapper {
     private static Map<TriggerKey, TriggerDefinition> toTriggers(JobKey jobKey, TriggerDefinitionApi triggerDefinitionApi) {
         Map<TriggerKey, TriggerDefinition> triggerMap = new LinkedHashMap<>();
 
-        int scheduleNumber = 1;
-        for (String cronExpression : triggerDefinitionApi.getCronExpressions()) {
-            TriggerDefinition triggerDefinition = toTrigger(jobKey, triggerDefinitionApi, cronExpression, scheduleNumber++);
+        List<String> cronExpressions = triggerDefinitionApi.getCronExpressions();
+        TriggerSuffixProvider triggerSuffixProvider = new TriggerSuffixProvider(cronExpressions.size());
+        assertTimezoneValid(triggerDefinitionApi.getTimeZone());
+        for (String cronExpression : cronExpressions) {
+            assertCronExpressionValid(cronExpression);
+            TriggerDefinition triggerDefinition = toTrigger(jobKey, triggerDefinitionApi, cronExpression, triggerSuffixProvider.increment());
             triggerMap.put(triggerDefinition.getTriggerKey(), triggerDefinition);
         }
         return triggerMap;
     }
 
-    private static TriggerKey triggerKey(JobKey jobKey, TriggerDefinitionApi triggerDefinitionApi, int scheduleNumber) {
-        String triggerName = triggerName(jobKey.getName(), triggerDefinitionApi.getName(), scheduleNumber);
-        String triggerGroup = Objects.requireNonNullElse(triggerDefinitionApi.getTriggerGroup(), jobKey.getGroup());
-        return new TriggerKey(triggerName, triggerGroup);
+    private static class TriggerSuffixProvider {
+        final int numExpressions;
+        int current;
+
+        private TriggerSuffixProvider(int numExpressions) {
+            this.numExpressions = numExpressions;
+            this.current = 1;
+        }
+
+        private String increment() {
+            return numExpressions == 1 ? null : "." + current++;
+        }
     }
 
-    private static TriggerDefinition toTrigger(JobKey jobKey, TriggerDefinitionApi triggerDefinitionApi, String cronExpression, int scheduleNumber) {
-        TriggerKey triggerKey = triggerKey(jobKey, triggerDefinitionApi, scheduleNumber);
+    private static TriggerDefinition toTrigger(JobKey jobKey, TriggerDefinitionApi triggerDefinitionApi, String cronExpression, String suffix) {
+        TriggerKey triggerKey = triggerKey(jobKey, triggerDefinitionApi, suffix);
         return TriggerDefinition.builder()
                 .triggerKey(triggerKey)
                 .description(triggerDefinitionApi.getDescription())
@@ -96,6 +114,12 @@ public class Mapper {
                 .cronExpression(cronExpression)
                 .jobDataMap(nullSafeJobDataMap(triggerDefinitionApi.getJobDataMap()))
                 .build();
+    }
+
+    private static TriggerKey triggerKey(JobKey jobKey, TriggerDefinitionApi triggerDefinitionApi, String suffix) {
+        String triggerName = triggerName(triggerDefinitionApi.getName(), suffix);
+        String triggerGroup = Objects.requireNonNullElse(triggerDefinitionApi.getTriggerGroup(), jobKey.getGroup());
+        return new TriggerKey(triggerName, triggerGroup);
     }
 
     private static Map<String, Object> nullSafeJobDataMap(Map<String, Object> jobDataMap) {
@@ -115,8 +139,7 @@ public class Mapper {
     @SuppressWarnings("unchecked")
     private static Class<? extends Job> castToJobClass(Class<?> jobClass) {
         if (!Job.class.isAssignableFrom(jobClass)) {
-            throw new IllegalArgumentException(
-                    "Job class '" + jobClass.getName() + "' must implement the Job interface.");
+            throw Errors.JOB_CLASS_NOT_A_JOB.toException("Job class '%s' must implement the Job interface.", jobClass.getName());
         }
         return (Class<? extends Job>) jobClass;
     }
@@ -125,11 +148,14 @@ public class Mapper {
         return timezone == null ? DEFAULT_TIMEZONE : TimeZone.getTimeZone(timezone);
     }
 
-    private static String triggerName(@NonNull String jobName, @NonNull String triggerName, int scheduleNumber) {
-        if (StringUtils.startsWith(triggerName, jobName + ".")) {
+    private static String triggerName(@NonNull String triggerName, String suffix) {
+        if (suffix == null){
             return triggerName;
         }
-        String name = jobName + "." + triggerName + "." + scheduleNumber;
+        if (StringUtils.endsWith(triggerName, suffix)) {
+            return triggerName;
+        }
+        String name = triggerName + suffix;
         return StringUtils.truncate(name, MAX_TRIGGER_NAME_LENGTH);
     }
 

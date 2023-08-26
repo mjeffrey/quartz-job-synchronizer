@@ -4,13 +4,9 @@ import be.sysa.quartz.initializer.api.ScheduleDefinitionApi;
 import be.sysa.quartz.initializer.service.ScheduleLoader;
 import be.sysa.quartz.initializer.service.XmlScheduleLoader;
 import be.sysa.quartz.initializer.support.FileLoader;
-import be.sysa.quartz.initializer.xml.Mapper;
 import be.sysa.quartz.initializer.xml.ScheduleDataXml;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.SneakyThrows;
+import be.sysa.quartz.initializer.xml.XmlMapper;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Scheduler;
 import org.quartz.spi.ClassLoadHelper;
@@ -53,7 +49,7 @@ public class XmlYamlConverterPlugin implements SchedulerPlugin {
         log.info("Starting XML->File conversion");
         try( InputStream inputStream = FileLoader.getClassLoadHelperResourceAsStream(classLoadHelper, importFile)){
             ScheduleDataXml scheduleDataXml = XmlScheduleLoader.loadSchedule(inputStream);
-            ScheduleDefinitionApi scheduleDefinitionApi = Mapper.toModel(scheduleDataXml);
+            ScheduleDefinitionApi scheduleDefinitionApi = XmlMapper.toModel(scheduleDataXml);
             File exportFile = new File(this.exportFile);
             try (FileOutputStream fileOutputStream = new FileOutputStream(exportFile)) {
                 ScheduleLoader.writeStream(fileOutputStream, scheduleDefinitionApi);

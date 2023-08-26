@@ -3,6 +3,7 @@ package be.sysa.quartz.initializer.model;
 
 import lombok.Builder;
 import lombok.NonNull;
+import lombok.Singular;
 import lombok.Value;
 import org.quartz.Job;
 import org.quartz.JobKey;
@@ -30,7 +31,8 @@ public class JobDefinition {
 
     @NonNull
     @Builder.Default
-    List< DependencyDefinition> dependencies = Collections.emptyList();
+    List<DependencyDefinition> dependencies = Collections.emptyList();
 
+    @Singular("jobData")
     Map<String, Object> jobDataMap;
 }

@@ -8,6 +8,7 @@ import lombok.SneakyThrows;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
+import org.quartz.Trigger.TriggerState;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -183,7 +184,7 @@ public class JobSynchronizer {
     private void updateTriggerIfChanged(TriggerDefinition triggerDefinition) {
         TriggerKey triggerKey = triggerDefinition.getTriggerKey();
         Trigger trigger = scheduleAccessor.getTrigger(triggerKey);
-        if (ComparisonSupport.triggerChanged(trigger, triggerDefinition)) {
+        if (ComparisonSupport.triggerChanged(trigger, triggerDefinition) || triggerInError(triggerKey)) {
             CronTrigger cronTrigger = createTrigger(triggerDefinition);
             scheduleAccessor.rescheduleJob(triggerKey, cronTrigger);
             if (triggerDefinition.isMisfireExecution() && trigger.getNextFireTime().before(new Date())) {
@@ -197,6 +198,11 @@ public class JobSynchronizer {
                         .build());
             }
         }
+    }
+
+    private boolean triggerInError(TriggerKey triggerKey) {
+        TriggerState triggerState = scheduleAccessor.getTriggerState(triggerKey);
+        return triggerState == TriggerState.ERROR;
     }
 
     @SneakyThrows
