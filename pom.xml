@@ -36,6 +36,7 @@
         <module>cron-description</module>
         <module>cron-description-api</module>
         <module>quartz-job-synchronizer</module>
+        <module>jacoco-report-aggregator</module>
         <module>examples</module>
     </modules>
     <properties>
@@ -385,6 +386,10 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <append>true</append>
+                    <destFile>${jacoco.reportPath}</destFile>
+                </configuration>
             </plugin>
         </plugins>
 

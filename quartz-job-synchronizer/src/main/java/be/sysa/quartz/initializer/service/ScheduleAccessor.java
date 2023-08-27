@@ -1,7 +1,6 @@
 package be.sysa.quartz.initializer.service;
 
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +33,7 @@ public class ScheduleAccessor {
     }
 
     @SneakyThrows
-    List<? extends Trigger> getTriggersOfJob(@NonNull JobKey jobKey) {
+    List<? extends Trigger> getTriggersOfJob(JobKey jobKey) {
         return scheduler.getTriggersOfJob(jobKey);
     }
 
@@ -55,7 +54,7 @@ public class ScheduleAccessor {
     }
 
     @SneakyThrows
-    void rescheduleJob(TriggerKey triggerKey, CronTrigger cronTrigger) {
+    void rescheduleJob(TriggerKey triggerKey, Trigger cronTrigger) {
         log.info("rescheduling trigger {}", triggerKey);
         scheduler.rescheduleJob(triggerKey, cronTrigger);
     }
@@ -81,7 +80,7 @@ public class ScheduleAccessor {
     }
 
     @SneakyThrows
-    void deleteTrigger(TriggerKey triggerKey) {
+    void unscheduleJob(TriggerKey triggerKey) {
         log.info("Deleting trigger {}", triggerKey);
         scheduler.unscheduleJob(triggerKey);
     }
@@ -91,7 +90,8 @@ public class ScheduleAccessor {
         return scheduler.getSchedulerName();
     }
 
-    public ListenerManager getListenerManager() throws SchedulerException {
+    @SneakyThrows
+    public ListenerManager getListenerManager() {
         return scheduler.getListenerManager();
     }
 }

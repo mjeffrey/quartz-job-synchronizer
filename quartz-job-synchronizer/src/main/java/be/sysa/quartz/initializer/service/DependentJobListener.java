@@ -99,8 +99,8 @@ public class DependentJobListener implements JobListener {
             start = now;
             isImmediate = true;
             if (notBefore != null) {
-                LocalDate localDate = LocalDate.ofInstant(parentFireTime, notBefore.getZoneId());
-                Instant notBeforeInstant = ZonedDateTime.of(localDate, notBefore.getLocalTime(), notBefore.getZoneId()).toInstant();
+                LocalDate localDate = LocalDate.ofInstant(parentFireTime, notBefore.getZone());
+                Instant notBeforeInstant = ZonedDateTime.of(localDate, notBefore.getLocalTime(), notBefore.getZone()).toInstant();
                 if (now.isBefore(notBeforeInstant)) {
                     start = notBeforeInstant;
                     isImmediate = false;

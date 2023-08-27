@@ -31,10 +31,10 @@ public class ZonedTime implements TemporalAccessor {
     public static final DateTimeFormatter FORMATTER_MINUTES = DateTimeFormatter.ofPattern("HH:mm VV");
 
     private final LocalTime localTime;
-    private final ZoneId zoneId;
+    private final ZoneId zone;
 
     public static String format(ZonedTime zonedTime) {
-        DateTimeFormatter formatter = ZoneOffset.UTC.equals(zonedTime.getZoneId()) ? FORMATTER_SECONDS_UTC : FORMATTER_SECONDS;
+        DateTimeFormatter formatter = ZoneOffset.UTC.equals(zonedTime.getZone()) ? FORMATTER_SECONDS_UTC : FORMATTER_SECONDS;
         return formatter.format(zonedTime);
     }
     public static ZonedTime of(LocalTime localTime, ZoneId zoneId) {
@@ -71,7 +71,7 @@ public class ZonedTime implements TemporalAccessor {
     @Override
     public <R> R query(TemporalQuery<R> query) {
         if (query == TemporalQueries.zone() || query == TemporalQueries.zoneId()) {
-            return (R) zoneId;
+            return (R) zone;
 
         } else if (query == TemporalQueries.localTime()) {
             return (R) localTime;
@@ -82,7 +82,7 @@ public class ZonedTime implements TemporalAccessor {
     @Override
     public long getLong(TemporalField field) {
         if ( field == OFFSET_SECONDS){
-            return zoneId.getRules().getStandardOffset(null).getLong(field);
+            return zone.getRules().getStandardOffset(null).getLong(field);
         }
         return localTime.getLong(field);
     }

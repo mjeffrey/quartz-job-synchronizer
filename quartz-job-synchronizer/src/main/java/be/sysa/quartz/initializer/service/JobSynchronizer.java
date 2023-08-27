@@ -155,7 +155,7 @@ public class JobSynchronizer {
 
     @SneakyThrows
     private void deleteTriggers(Set<TriggerKey> removeTriggers) {
-        removeTriggers.forEach(scheduleAccessor::deleteTrigger);
+        removeTriggers.forEach(scheduleAccessor::unscheduleJob);
     }
 
     @SneakyThrows
