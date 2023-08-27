@@ -28,7 +28,7 @@ public class DependentJobListenerTest {
     private static final JobKey PARENT_JOB = JobKey.jobKey("parent", "group1");
     private static final JobKey CHILD_JOB = JobKey.jobKey("child", "group2");
     private static final String DEPENDENCY_NAME = "name";
-    private static final DependencyDefinition.DependencyDefinitionBuilder DEPENDENCY_BUILDER = DependencyDefinition.builder()
+    private final DependencyDefinition.DependencyDefinitionBuilder DEPENDENCY_BUILDER = DependencyDefinition.builder()
             .name(DEPENDENCY_NAME)
             .childJob(CHILD_JOB);
     DependentJobListener dependentJobListener;
@@ -40,8 +40,6 @@ public class DependentJobListenerTest {
 
     @Captor
     ArgumentCaptor<Trigger> triggerArgumentCaptor;
-
-    JobExecutionException jobException;
 
     @BeforeEach
     void setUp() {
@@ -91,8 +89,9 @@ public class DependentJobListenerTest {
         Instant parentFireTime = now.minusSeconds(10);
         StartTime startTime = new StartTime(DEPENDENCY_BUILDER.build(), parentFireTime, now);
         assertThat(startTime)
+                .returns(true, StartTime::isImmediate)
                 .returns(now, StartTime::getStart)
-                .returns(true, StartTime::isImmediate);
+        ;
     }
 
     @Test
