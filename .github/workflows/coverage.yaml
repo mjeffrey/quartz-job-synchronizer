@@ -10,7 +10,7 @@ name: Java CI with Maven Coverage
 
 on:
   push:
-    branches: [ "coverage, main" ]
+    branches: [ "coverage", "main" ]
   pull_request:
     branches: [ "main" ]
 
