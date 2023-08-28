@@ -36,7 +36,6 @@
         <module>cron-description</module>
         <module>cron-description-api</module>
         <module>quartz-job-synchronizer</module>
-        <module>jacoco-report-aggregator</module>
         <module>examples</module>
     </modules>
     <properties>
@@ -368,28 +367,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>report</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <append>true</append>
-                    <destFile>${jacoco.reportPath}</destFile>
-                </configuration>
             </plugin>
         </plugins>
 
