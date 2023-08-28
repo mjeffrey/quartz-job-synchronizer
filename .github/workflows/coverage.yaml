@@ -37,7 +37,7 @@ jobs:
         badges-directory: badges
         generate-branches-badge: true
         generate-summary: true
-        jacoco-csv-file: jacoco-csv-file: "**/jacoco.csv"
+        ˚jacoco-csv-file: "**/jacoco.csv"
 
     - name: Log coverage percentages to workflow output
       run: |
