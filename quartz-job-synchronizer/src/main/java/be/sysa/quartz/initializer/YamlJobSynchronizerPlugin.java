@@ -26,6 +26,25 @@ import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
 
+/**
+ * YamlJobSynchronizerPlugin is a class that implements the SchedulerPlugin interface for synchronizing job schedules
+ * based on YAML configuration files.
+ *
+ * The class provides the following functionality:
+ * - Initializing the plugin with the plugin name, scheduler instance, and class load helper
+ * - Starting the synchronization process by reading YAML files and synchronizing job schedules
+ * - Checking for forbidden jobs based on configuration and removing them from synchronization
+ * - Converting YAML files to ScheduleDefinition models
+ * - Shutting down the plugin gracefully
+ *
+ * Usage:
+ * 1. Create an instance of YamlJobSynchronizerPlugin and set the necessary properties (fileNames, allowJobs)
+ * 2. Initialize the plugin by calling the initialize() method with the plugin name, scheduler instance, and class load helper
+ * 3. Start the synchronization process by calling the start() method
+ * 4. The plugin will automatically synchronize the job schedules based on the specified YAML files and allowed jobs
+ * 5. Optionally, handle any exceptions thrown during the synchronization process
+ * 6. Shut down the plugin by calling the shutdown() method
+ */
 @Getter
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor

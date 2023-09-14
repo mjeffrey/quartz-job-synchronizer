@@ -17,6 +17,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * This is a plugin class that provides functionality to convert XML data to YAML format.
+ * It implements the SchedulerPlugin interface.
+
+ * The plugin supports exporting an existing job schedule from XML to a file using the specified exportFile property.
+ * The importFile property can be used to specify the XML file to import data from.
+ * The plugin will export the converted YAML data to the specified exportFile.
+ *
+ * @since 1.0
+ */
 @Getter
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor

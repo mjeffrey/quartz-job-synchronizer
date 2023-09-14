@@ -13,6 +13,10 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
+/**
+ * A {@link JobListener} that triggers a dependent job after the parent job has executed successfully.
+ * The dependent job is defined by a {@link DependencyDefinition}.
+ */
 @Value
 @Slf4j
 public class DependentJobListener implements JobListener {
@@ -22,10 +26,21 @@ public class DependentJobListener implements JobListener {
         this.dependency = dependency;
     }
 
+    /**
+     * Creates a new instance of DependentJobListener with the given dependency definition.
+     *
+     * @param dependency the dependency definition of the job listener
+     * @return a new instance of DependentJobListener
+     */
     public static DependentJobListener create(DependencyDefinition dependency) {
         return new DependentJobListener(dependency);
     }
 
+    /**
+     * Returns the name of the DependentJobListener (the name of the dependency)
+     *
+     * @return the name of the DependentJobListener
+     */
     @Override
     public String getName() {
         return dependency.getName();

@@ -9,6 +9,9 @@ import lombok.Value;
 
 import java.util.List;
 
+/**
+ * Represents a schedule of jobs and triggers in XML format.
+ */
 @Builder
 @Value
 @JacksonXmlRootElement(localName = "schedule")

@@ -17,6 +17,7 @@
         <javac.target>11</javac.target>
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <maven-enforcer-plugin.version>3.3.0</maven-enforcer-plugin.version>
+        <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
         <minimum-maven.version>3.6.0</minimum-maven.version>
         <quartz-job-synchronizer.version>1.0.0</quartz-job-synchronizer.version>
     </properties>
@@ -101,6 +102,14 @@
                     <source>${javac.target}</source>
                     <target>${javac.target}</target>
                     <release>${javac.target}</release>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven-resources-plugin.version}</version>
+                <configuration>
+                    <encoding>utf-8</encoding>
                 </configuration>
             </plugin>
             <plugin>

@@ -6,6 +6,9 @@ import org.quartz.JobKey;
 
 import java.util.Map;
 
+/**
+ * Represents a Quartz Job group definition.
+ */
 @Builder(toBuilder = true)
 @Value
 public class GroupDefinition {

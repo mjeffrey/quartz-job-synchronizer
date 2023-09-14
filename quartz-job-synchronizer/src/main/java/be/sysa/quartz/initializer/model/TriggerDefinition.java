@@ -11,6 +11,10 @@ import org.quartz.TriggerKey;
 import java.util.Map;
 import java.util.TimeZone;
 
+/**
+ * Represents a definition of a trigger for a job.
+ *
+ */
 @Value
 @Builder(toBuilder = true)
 public class TriggerDefinition {

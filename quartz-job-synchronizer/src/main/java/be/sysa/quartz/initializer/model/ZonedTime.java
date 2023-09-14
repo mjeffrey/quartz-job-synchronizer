@@ -19,37 +19,91 @@ import java.util.Set;
 
 import static java.time.temporal.ChronoField.*;
 
+/**
+ * A class representing a ZonedTime, which combines a LocalTime and a ZoneId.
+ *
+ * <p>Instances of {@code ZonedTime} are immutable, which means that once created, their values cannot be changed.
+ * Instances of this class are guaranteed to be valid and not-null.
+ *
+ * <p>This class implements the {@code TemporalAccessor} interface, providing access to the time and zone information.
+ * It also provides various utility methods for formatting, parsing, and obtaining values from a {@code TemporalAccessor}.
+ *
+ * <p>The supported fields for this class are: SECOND_OF_MINUTE, MINUTE_OF_HOUR, HOUR_OF_DAY, and OFFSET_SECONDS.
+ *
+ * <p>Example usage:
+ * <pre>
+ * LocalTime localTime = LocalTime.now();
+ * ZoneId zoneId = ZoneId.systemDefault();
+ * ZonedTime zonedTime = ZonedTime.of(localTime, zoneId);
+ * </pre>
+ */
 @RequiredArgsConstructor
 @ToString
 @EqualsAndHashCode
 @Getter
 public class ZonedTime implements TemporalAccessor {
     private static final Set<TemporalField> SUPPORTED_FIELDS = Set.of(SECOND_OF_MINUTE, MINUTE_OF_HOUR, HOUR_OF_DAY, OFFSET_SECONDS );
-    public static final DateTimeFormatter PARSER = DateTimeFormatter.ofPattern("HH:mm[:ss][ VV][X]");
-    public static final DateTimeFormatter FORMATTER_SECONDS = DateTimeFormatter.ofPattern("HH:mm:ss VV");
-    public static final DateTimeFormatter FORMATTER_SECONDS_UTC = DateTimeFormatter.ofPattern("HH:mm:ssX");
-    public static final DateTimeFormatter FORMATTER_MINUTES = DateTimeFormatter.ofPattern("HH:mm VV");
+    private static final DateTimeFormatter PARSER = DateTimeFormatter.ofPattern("HH:mm[:ss][ VV][X]");
+    private static final DateTimeFormatter FORMATTER_SECONDS = DateTimeFormatter.ofPattern("HH:mm:ss VV");
+    private static final DateTimeFormatter FORMATTER_SECONDS_UTC = DateTimeFormatter.ofPattern("HH:mm:ssX");
+    private static final DateTimeFormatter FORMATTER_MINUTES = DateTimeFormatter.ofPattern("HH:mm VV");
 
     private final LocalTime localTime;
     private final ZoneId zone;
 
+    /**
+     * Formats the given ZonedTime object into a string representation.
+     *
+     * @param zonedTime the ZonedTime object to format
+     * @return the formatted string representation of the ZonedTime object
+     */
     public static String format(ZonedTime zonedTime) {
         DateTimeFormatter formatter = ZoneOffset.UTC.equals(zonedTime.getZone()) ? FORMATTER_SECONDS_UTC : FORMATTER_SECONDS;
         return formatter.format(zonedTime);
     }
+    /**
+     * Creates a new ZonedTime object with the specified LocalTime and ZoneId.
+     *
+     * @param localTime the LocalTime representing the time portion
+     * @param zoneId the ZoneId representing the time zone
+     * @return a new ZonedTime object initialized with the specified LocalTime and ZoneId
+     */
     public static ZonedTime of(LocalTime localTime, ZoneId zoneId) {
         return new ZonedTime(localTime, zoneId);
     }
 
+    /**
+     * Parses the specified CharSequence to create a new ZonedTime object.
+     *
+     * @param text the text to parse, not null
+     * @return a new ZonedTime object parsed from the specified text
+     */
     public static ZonedTime parse(CharSequence text) {
         return parse(text, PARSER);
     }
 
+    /**
+     * Parses the specified CharSequence using the provided DateTimeFormatter to create a new ZonedTime object.
+     *
+     * @param text the text to parse, not null
+     * @param formatter the DateTimeFormatter to use for parsing, not null
+     * @return a new ZonedTime object parsed from the specified text
+     * @throws NullPointerException if the formatter is null
+     */
     public static ZonedTime parse(CharSequence text, DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
         return formatter.parse(text, ZonedTime::from);
     }
 
+    /**
+     * Creates a new ZonedTime object from the specified TemporalAccessor.
+     * If the specified TemporalAccessor is already an instance of ZonedTime, it is simply cast and returned.
+     * Otherwise, it attempts to extract the ZoneId and LocalTime from the TemporalAccessor and create a new ZonedTime object.
+     *
+     * @param temporal the TemporalAccessor from which to create the ZonedTime object
+     * @return a new ZonedTime object created from the specified TemporalAccessor
+     * @throws DateTimeException if unable to obtain ZonedTime from TemporalAccessor
+     */
     public static ZonedTime from(TemporalAccessor temporal) {
         if (temporal instanceof ZonedTime) {
             return (ZonedTime) temporal;

@@ -7,6 +7,9 @@ import lombok.Value;
 
 import java.util.List;
 
+/**
+ * Represents a job definition in XML format.
+ */
 @Value
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)

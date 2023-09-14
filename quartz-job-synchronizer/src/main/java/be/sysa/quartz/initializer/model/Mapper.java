@@ -20,11 +20,20 @@ import java.util.stream.Collectors;
 import static be.sysa.quartz.initializer.support.ValidatorUtils.assertCronExpressionValid;
 import static be.sysa.quartz.initializer.support.ValidatorUtils.assertTimezoneValid;
 
+/**
+ *
+ */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Mapper {
     private static final TimeZone DEFAULT_TIMEZONE = TimeZone.getTimeZone(ZoneOffset.UTC);
     private static final int MAX_TRIGGER_NAME_LENGTH = 250;
 
+    /**
+     * Converts a ScheduleDefinitionApi object to a ScheduleDefinition object.
+     *
+     * @param scheduleDefinitionApi The ScheduleDefinitionApi object to be converted.
+     * @return The converted ScheduleDefinition object.
+     */
     public static ScheduleDefinition toModel(ScheduleDefinitionApi scheduleDefinitionApi) {
         return ScheduleDefinition.builder()
                 .groups(toGroups(scheduleDefinitionApi))
@@ -194,11 +203,23 @@ public class Mapper {
         return durable == null || durable;
     }
 
+    /**
+     * Determines if we handle misfires
+     *
+     * @param triggerDefinition The trigger definition
+     * @return True if the job associated with the trigger should be stored and recovered if it fails, false otherwise.
+     */
     public static boolean misfireHandling(TriggerDefinitionApi triggerDefinition) {
         Boolean misfireExecution = triggerDefinition.getMisfireExecution();
         return misfireExecution != null && misfireExecution;
     }
 
+    /**
+     * Determines the priority of a task.
+     *
+     * @param priority The priority of the task. Can be null.
+     * @return The priority of the task. Returns the default priority if the given priority is null.
+     */
     public static int priority(Integer priority) {
         return Objects.requireNonNullElse(priority, Trigger.DEFAULT_PRIORITY);
     }

@@ -11,8 +11,17 @@ import org.quartz.JobKey;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * The XmlMapper class is responsible for mapping XML data to ScheduleDefinitionApi models.
+ */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class XmlMapper {
+    /**
+     * Converts a ScheduleDataXml object to a ScheduleDefinitionApi object.
+     *
+     * @param scheduleDataXml The ScheduleDataXml object to convert.
+     * @return The converted ScheduleDefinitionApi object.
+     */
     public static ScheduleDefinitionApi toModel(ScheduleDataXml scheduleDataXml) {
         return toModel(scheduleDataXml.getSchedule());
     }
