@@ -46,7 +46,7 @@ public class Mapper {
                 .map(Mapper::toGroup)
                 .collect(Collectors.toMap(GroupDefinition::getName, Function.identity(),
                         (group1, group2) -> {
-                            throw Errors.DUPLICATE_GROUPS.toException("Group '%s' appears twice in the schedule.", group1.getName());}
+                            throw Errors.DUPLICATE_GROUP.toException("Group '%s' appears twice in the schedule.", group1.getName());}
                         ));
     }
 

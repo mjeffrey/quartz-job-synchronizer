@@ -89,7 +89,7 @@ public class ScheduleMerger {
         String groupName = groupDefinition.getName();
         boolean added = allGroups.add(groupName);
         if (!added) {
-            throw Errors.DUPLICATE_GROUPS.toException("Duplicate Group found %s", groupName);
+            throw Errors.DUPLICATE_GROUP.toException("Duplicate Group found %s", groupName);
         }
     }
 

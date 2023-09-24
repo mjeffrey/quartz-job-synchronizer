@@ -30,7 +30,7 @@ public enum Errors {
     /**
      * This error indicates that the Duplicate Groups were found in the Schedule.
      */
-    DUPLICATE_GROUPS,
+    DUPLICATE_GROUP,
 
     /**
      * This error indicates that a Duplicate Jobs were found in the Schedule.

@@ -13,7 +13,7 @@ import java.util.Map;
 
 import static be.sysa.quartz.initializer.fixtures.ScheduleAssert.assertThat;
 import static be.sysa.quartz.initializer.fixtures.ScheduleFixture.maximalJob;
-import static be.sysa.quartz.initializer.fixtures.ScheduleFixture.mimimalJob;
+import static be.sysa.quartz.initializer.fixtures.ScheduleFixture.minimalJob;
 
 public class XmlMapperTest {
 
@@ -21,7 +21,7 @@ public class XmlMapperTest {
     @DisplayName("Use minimal fixture to map to model and verify the contents (with defaults), One trigger with the same name created")
     public void toModelMinimal() {
 
-        GroupDefinitionApi minimal = GroupDefinitionApi.builder().name("minimal").job(mimimalJob()).build();
+        GroupDefinitionApi minimal = GroupDefinitionApi.builder().name("minimal").job(minimalJob()).build();
         ScheduleDefinitionApi scheduleDefinitionApi = ScheduleDefinitionApi.builder()
                 .group(minimal)
                 .build();

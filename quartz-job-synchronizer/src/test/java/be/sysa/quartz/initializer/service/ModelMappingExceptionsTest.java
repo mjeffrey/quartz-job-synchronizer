@@ -83,7 +83,7 @@ public class ModelMappingExceptionsTest {
                 .describedAs(scheduleDefinitionApi.toString())
                 .isThrownBy( ()->Mapper.toModel(scheduleDefinitionApi))
                 .extracting(ScheduleDefinitionException::getErrorCode)
-                .isEqualTo(Errors.DUPLICATE_GROUPS);
+                .isEqualTo(Errors.DUPLICATE_GROUP);
     }
 
     @SneakyThrows
