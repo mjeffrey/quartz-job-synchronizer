@@ -16,7 +16,7 @@ spring:
           plugin:
             jobSynchronizer:
               class: "be.sysa.quartz.initializer.YamlJobSynchronizerPlugin"
-              fileNames: "classpath:jobs.yaml" #, classpath:ibis-jobs.yaml
+              fileNames: "classpath:jobs.yaml,classpath:jobs2.yaml" #, classpath:ibis-jobs.yaml
 
     job-store-type: jdbc
     jdbc:

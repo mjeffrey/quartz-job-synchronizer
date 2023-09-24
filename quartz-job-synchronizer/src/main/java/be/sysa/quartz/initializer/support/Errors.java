@@ -31,10 +31,24 @@ public enum Errors {
      * This error indicates that the Duplicate Groups were found in the Schedule.
      */
     DUPLICATE_GROUPS,
+
+    /**
+     * This error indicates that a Duplicate Jobs were found in the Schedule.
+     */
+    DUPLICATE_JOB,
+    /**
+     * This error indicates that a Duplicate Trigger was found in the Schedule.
+     */
+    DUPLICATE_TRIGGER,
     /**
      * This error indicates that the Timezone was not valid. Use the long for e,g, Europe/Brussels or UTC
      */
-    TIMEZONE_INVALID;
+    TIMEZONE_INVALID,
+
+    /**
+     * If there were no schedules defined
+     */
+    NO_SCHEDULES;
 
     /**
      * Converts the current object to a ScheduleDefinitionException.

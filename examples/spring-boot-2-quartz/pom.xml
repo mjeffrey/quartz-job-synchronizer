@@ -15,6 +15,8 @@
     <properties>
         <spring-boot.version>2.7.14</spring-boot.version>
         <javac.target>11</javac.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <maven-enforcer-plugin.version>3.3.0</maven-enforcer-plugin.version>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>

@@ -1,0 +1,25 @@
+schedule:
+  - group: "maximal2"
+    jobs:
+      - job-name: "MaximalJob"
+        job-class: "be.sysa.quartz.jobs.SampleJob"
+        recover: false
+        durable: false
+        job-data-map:
+          Key5: "value"
+          Key2: 2
+        triggers:
+          - name: "MaximalJob.FileGeneration.1"
+            trigger-group: "triggerGroup2"
+            misfire-execution: true
+            description: "Trigger Description"
+            priority: 10
+            time-zone: "Europe/Brussels"
+            expressions:
+              - "0,11 0,30 5-20 ? * MON,TUE *"
+            job-data-map:
+              datakey1: "valueX"
+              datakey2: 0.123
+          - name: "MaximalJob.FileGeneration.2"
+            expressions:
+              - "0 0 5-20 ? * SAT,SUN *"
