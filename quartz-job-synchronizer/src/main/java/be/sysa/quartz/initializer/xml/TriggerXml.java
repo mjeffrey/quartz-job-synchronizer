@@ -4,6 +4,9 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.Builder;
 import lombok.Value;
 
+/**
+ * Represents a job trigger in XML format.
+ */
 @Value
 @Builder
 public class TriggerXml {

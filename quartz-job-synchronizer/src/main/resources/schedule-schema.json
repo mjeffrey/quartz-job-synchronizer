@@ -113,7 +113,7 @@
       "title": "Trigger",
       "additionalProperties": false,
       "properties": {
-        "name": {
+        "trigger-name": {
           "type": "string",
           "description": "Name of the trigger. The Trigger Name will be the JobName.TriggerName.ScheduleNumber (number of the cron expression)",
           "maxLength": 30

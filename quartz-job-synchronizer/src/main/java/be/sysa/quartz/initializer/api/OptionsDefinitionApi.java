@@ -7,6 +7,10 @@ import lombok.Value;
 
 import java.util.List;
 
+/**
+ * This class represents an API for defining options.
+ * The only current options are a list of groups to delete. By defaults groups are not deleted
+ */
 @Builder(toBuilder = true)
 @Value
 public class OptionsDefinitionApi {

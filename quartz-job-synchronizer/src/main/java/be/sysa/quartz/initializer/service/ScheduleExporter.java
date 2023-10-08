@@ -20,6 +20,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * The ScheduleExporter class is responsible for exporting the schedule from a scheduler to an output stream.
+ */
 @Value
 @Slf4j
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
@@ -27,16 +30,31 @@ public class ScheduleExporter {
 
     ScheduleAccessor scheduleAccessor;
 
+    /**
+     * Create a new instance of ScheduleExporter.
+     *
+     * @param scheduler the Scheduler object to be used by the ScheduleExporter
+     */
     public ScheduleExporter(Scheduler scheduler) {
         this.scheduleAccessor = new ScheduleAccessor(scheduler);
     }
 
+    /**
+     * Export the schedule to the given output stream.
+     *
+     * @param outputStream the output stream to write the schedule data to
+     */
     @SneakyThrows
     public void export(OutputStream outputStream) {
         writeHeader(outputStream);
         ScheduleLoader.writeStream(outputStream, readExistingSchedule());
     }
 
+    /**
+     * Read the existing schedule from the schedule accessor.
+     *
+     * @return the existing schedule as a ScheduleDefinitionApi object
+     */
     @SneakyThrows
     public ScheduleDefinitionApi readExistingSchedule() {
         ScheduleDefinitionApi.ScheduleDefinitionApiBuilder scheduleBuilder = ScheduleDefinitionApi.builder();

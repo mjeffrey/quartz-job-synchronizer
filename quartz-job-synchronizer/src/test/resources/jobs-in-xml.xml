@@ -6,7 +6,7 @@
         <job>
             <name>MaximalJob</name>
             <group>maximal</group>
-            <job-class>be.sysa.quartz.jobs.SampleJob</job-class>
+            <job-class>be.sysa.quartz.initializer.fixtures.jobs.MyTestJob</job-class>
             <durability>true</durability>
             <recover>true</recover>
             <job-data-map>
@@ -23,7 +23,7 @@
         <job>
             <name>MinimalJob</name>
             <group>minimal</group>
-            <job-class>be.sysa.quartz.jobs.SampleJob</job-class>
+            <job-class>be.sysa.quartz.initializer.fixtures.jobs.MyTestJob</job-class>
         </job>
 
        <trigger>

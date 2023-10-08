@@ -15,6 +15,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ * YamlScheduleExporterPlugin is a scheduler plugin that exports the existing job schedules to a YAML file.
+ */
 @Getter
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor

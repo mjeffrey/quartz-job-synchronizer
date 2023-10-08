@@ -6,7 +6,7 @@ schedule:
   - group: "maximal"
     jobs:
       - job-name: "MaximalJob"
-        job-class: "be.sysa.quartz.jobs.SampleJob"
+        job-class: "be.sysa.quartz.initializer.fixtures.jobs.MyTestJob"
         recover: true
         durable: false
         dependencies:
@@ -41,7 +41,7 @@ schedule:
   - group: "minimal"
     jobs:
       - job-name: "MinimalJob"
-        job-class: "be.sysa.quartz.jobs.SampleJob"
+        job-class: "be.sysa.quartz.initializer.fixtures.jobs.MyTestJob"
         triggers:
           - name: "FileGeneration"
             expressions:

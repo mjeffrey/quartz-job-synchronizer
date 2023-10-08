@@ -7,32 +7,38 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 
+/**
+ * Class XmlScheduleLoader is responsible for loading schedule data from an XML file.
+ *
+ * This class provides a method to load the schedule data from an input stream.
+ *
+ * Usage:
+ * 1. Create an instance of XmlScheduleLoader.
+ * 2. Call the static method loadSchedule() and pass an input stream containing the XML data.
+ * 3. The method will parse the XML data and return a ScheduleDataXml object.
+ *
+ * Example:
+ * InputStream inputStream = new FileInputStream("schedule.xml");
+ * ScheduleDataXml scheduleData = XmlScheduleLoader.loadSchedule(inputStream);
+ *
+ * @see ScheduleDataXml
+ */
 @Slf4j
 @Getter
 public class XmlScheduleLoader {
     private static final ObjectMapper objectMapper = new XmlMapper();
 
+    /**
+     * Loads and parses the ScheduleDataXml from the given input stream.
+     *
+     * @param inputStream the input stream containing the ScheduleDataXml
+     * @return the ScheduleDataXml parsed from the input stream
+     */
     @SneakyThrows
     public static ScheduleDataXml loadSchedule(InputStream inputStream){
         return objectMapper.readerFor(ScheduleDataXml.class).readValue(inputStream);
     }
-
-    @SneakyThrows
-    public static String writeString(ScheduleDataXml scheduleDefinition){
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        writeStream(outputStream, scheduleDefinition);
-        return outputStream.toString(StandardCharsets.UTF_8 );
-    }
-
-    @SneakyThrows
-    public static void writeStream(OutputStream outputStream, ScheduleDataXml scheduleDefinition){
-        objectMapper.writerFor(ScheduleDataXml.class).writeValue(outputStream, scheduleDefinition);
-    }
-
 
 }

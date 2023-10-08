@@ -10,6 +10,10 @@ import lombok.Value;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The TriggerDefinitionApi class represents the definition of a trigger for scheduling jobs.
+ * It provides access to various properties of the trigger.
+ */
 @Value
 @Builder(toBuilder = true)
 public class TriggerDefinitionApi {

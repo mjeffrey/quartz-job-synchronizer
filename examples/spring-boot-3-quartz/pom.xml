@@ -8,16 +8,23 @@
     <packaging>jar</packaging>
     <description>Demo project for Scheduling in Spring with Quartz</description>
 
-    <parent>
-        <groupId>be.sysa.quartz-job-synchronizer</groupId>
-        <artifactId>examples</artifactId>
-        <version>${revision}</version>
-    </parent>
+    <groupId>be.sysa.quartz-job-synchronizer.examples</groupId>
     <artifactId>spring-boot-3-quartz</artifactId>
-    <version>${revision}</version>
+    <version>1.0.0</version>
 
     <properties>
         <spring-boot.version>3.1.2</spring-boot.version>
+        <javac.target>17</javac.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- TODO replace me with the latest version -->
+        <quartz-job-synchronizer.version>local</quartz-job-synchronizer.version>
+
+        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+        <maven-enforcer-plugin.version>3.3.0</maven-enforcer-plugin.version>
+        <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
+        <minimum-maven.version>3.6.0</minimum-maven.version>
+
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -40,8 +47,14 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
-
-        <!-- In V3 spring's support for quartz nneds to be excluded and 2.5.X (for jakarta) needs to be included -->
+        <dependency>
+            <groupId>be.sysa.quartz-job-synchronizer</groupId>
+            <artifactId>quartz-job-synchronizer</artifactId>
+            <type>test-jar</type>
+            <version>${quartz-job-synchronizer.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- In V3 spring's support for quartz needs to be excluded and 2.5.X (for jakarta) needs to be included -->
         <!-- quartz -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -61,10 +74,12 @@
         <dependency>
             <groupId>be.sysa.quartz-job-synchronizer</groupId>
             <artifactId>quartz-job-synchronizer</artifactId>
+            <version>${quartz-job-synchronizer.version}</version>
         </dependency>
         <dependency>
             <groupId>be.sysa.quartz-job-synchronizer</groupId>
             <artifactId>cron-description</artifactId>
+            <version>${quartz-job-synchronizer.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -73,6 +88,11 @@
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-xml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- h2 in-memory database -->
@@ -91,33 +111,51 @@
             <version>2.11.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring-boot.version}</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <classifier>exec</classifier>
-                    <mainClass>be.sysa.quartz.SpringBoot3QuartzApp</mainClass>
-                    <excludeDevtools>true</excludeDevtools>
-                    <useTestClasspath>true</useTestClasspath>
-                    <executable>true</executable>
+                    <compilerVersion>${javac.target}</compilerVersion>
+                    <source>${javac.target}</source>
+                    <target>${javac.target}</target>
+                    <release>${javac.target}</release>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven-resources-plugin.version}</version>
+                <configuration>
+                    <encoding>utf-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>${maven-enforcer-plugin.version}</version>
                 <executions>
                     <execution>
-                        <id>build-info</id>
+                        <id>enforce-maven</id>
                         <goals>
-                            <goal>build-info</goal>
+                            <goal>enforce</goal>
                         </goals>
-                    </execution>
-                    <execution>
-                        <id>repackage</id>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>${minimum-maven.version}</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

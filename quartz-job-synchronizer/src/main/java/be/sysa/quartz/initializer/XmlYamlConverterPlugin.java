@@ -4,13 +4,9 @@ import be.sysa.quartz.initializer.api.ScheduleDefinitionApi;
 import be.sysa.quartz.initializer.service.ScheduleLoader;
 import be.sysa.quartz.initializer.service.XmlScheduleLoader;
 import be.sysa.quartz.initializer.support.FileLoader;
-import be.sysa.quartz.initializer.xml.Mapper;
 import be.sysa.quartz.initializer.xml.ScheduleDataXml;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.SneakyThrows;
+import be.sysa.quartz.initializer.xml.XmlMapper;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Scheduler;
 import org.quartz.spi.ClassLoadHelper;
@@ -21,6 +17,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * This is a plugin class that provides functionality to convert XML data to YAML format.
+ * It implements the SchedulerPlugin interface.
+
+ * The plugin supports exporting an existing job schedule from XML to a file using the specified exportFile property.
+ * The importFile property can be used to specify the XML file to import data from.
+ * The plugin will export the converted YAML data to the specified exportFile.
+ *
+ * @since 1.0
+ */
 @Getter
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
@@ -53,7 +59,7 @@ public class XmlYamlConverterPlugin implements SchedulerPlugin {
         log.info("Starting XML->File conversion");
         try( InputStream inputStream = FileLoader.getClassLoadHelperResourceAsStream(classLoadHelper, importFile)){
             ScheduleDataXml scheduleDataXml = XmlScheduleLoader.loadSchedule(inputStream);
-            ScheduleDefinitionApi scheduleDefinitionApi = Mapper.toModel(scheduleDataXml);
+            ScheduleDefinitionApi scheduleDefinitionApi = XmlMapper.toModel(scheduleDataXml);
             File exportFile = new File(this.exportFile);
             try (FileOutputStream fileOutputStream = new FileOutputStream(exportFile)) {
                 ScheduleLoader.writeStream(fileOutputStream, scheduleDefinitionApi);

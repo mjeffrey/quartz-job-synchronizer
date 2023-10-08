@@ -7,6 +7,10 @@ import lombok.Value;
 
 import java.util.List;
 
+/**
+ * This class represents a definition for a group derived from an external representation (yaml).
+ * It contains the name of the group and a list of job definitions associated with the group.
+ */
 @Builder(toBuilder = true)
 @Value
 public class GroupDefinitionApi {
