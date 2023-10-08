@@ -13,15 +13,15 @@ import java.util.Map;
 
 import static be.sysa.quartz.initializer.fixtures.ScheduleAssert.assertThat;
 import static be.sysa.quartz.initializer.fixtures.ScheduleFixture.maximalJob;
-import static be.sysa.quartz.initializer.fixtures.ScheduleFixture.mimimalJob;
+import static be.sysa.quartz.initializer.fixtures.ScheduleFixture.minimalJob;
 
-public class MapperTest {
+public class XmlMapperTest {
 
     @Test
-    @DisplayName("Use minimal fixture to map to model and verify the contents (with defaults)")
+    @DisplayName("Use minimal fixture to map to model and verify the contents (with defaults), One trigger with the same name created")
     public void toModelMinimal() {
 
-        GroupDefinitionApi minimal = GroupDefinitionApi.builder().name("minimal").job(mimimalJob()).build();
+        GroupDefinitionApi minimal = GroupDefinitionApi.builder().name("minimal").job(minimalJob()).build();
         ScheduleDefinitionApi scheduleDefinitionApi = ScheduleDefinitionApi.builder()
                 .group(minimal)
                 .build();
@@ -30,12 +30,12 @@ public class MapperTest {
         JobDefinitionAssert jobAssert = groupAssert.hasJobs("MinimalJob")
                 .hasJob("MinimalJob");
         TriggerDefinitionAssert triggerAssert = jobAssert
-                .hasTriggers("MinimalJob.FileGeneration.1")
+                .hasTriggers("FileGeneration")
                 .jobClass("be.sysa.quartz.initializer.fixtures.jobs.MyTestJob")
                 .recover(false)
                 .durable(true)
                 .hasJobData(Collections.emptyMap())
-                .hasTrigger("MinimalJob.FileGeneration.1");
+                .hasTrigger("FileGeneration");
 
         triggerAssert.noDescription()
                 .triggerGroup("minimal")
@@ -47,7 +47,7 @@ public class MapperTest {
     }
 
     @Test
-    @DisplayName("Use maximal fixture to map to model and verify the contents. A trigger per cronExpression is created")
+    @DisplayName("Use maximal fixture to map to model and verify the contents. A trigger per cronExpression is created, with names: Trigger.[sequence]")
     public void toModelMaximal() {
 
         GroupDefinitionApi maximal = GroupDefinitionApi.builder().name("maximal").job(maximalJob()).build();
@@ -59,7 +59,7 @@ public class MapperTest {
         JobDefinitionAssert jobAssert = groupAssert.hasJobs("MaximalJob")
                 .hasJob("MaximalJob");
         jobAssert
-                .hasTriggers("MaximalJob.FileGeneration.1", "MaximalJob.FileGeneration.2")
+                .hasTriggers("FileGeneration.1", "FileGeneration.2")
                 .jobClass("be.sysa.quartz.initializer.fixtures.jobs.MyTestJob")
                 .recover(true)
                 .durable(true)
@@ -68,7 +68,7 @@ public class MapperTest {
                         "Key2", 2
                 ));
 
-        jobAssert.hasTrigger("MaximalJob.FileGeneration.1")
+        jobAssert.hasTrigger("FileGeneration.1")
                 .descriptionContains("every 5 minutes starting at minute 02, every hour between 06:00 and 20:00, every Weekday")
                 .triggerGroup("triggerGroup")
                 .misfireExecution(true)
@@ -80,7 +80,7 @@ public class MapperTest {
                         "datakey2", 0.123
                 ));
 
-        jobAssert.hasTrigger("MaximalJob.FileGeneration.2")
+        jobAssert.hasTrigger("FileGeneration.2")
                 .descriptionContains("every 5 minutes starting at minute 02, every hour between 06:00 and 20:00, every Weekday")
                 .triggerGroup("triggerGroup")
                 .misfireExecution(true)

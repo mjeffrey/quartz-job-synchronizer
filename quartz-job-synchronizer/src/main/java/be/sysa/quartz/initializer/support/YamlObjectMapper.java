@@ -8,7 +8,15 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import static com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature.SPLIT_LINES;
 import static com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature.WRITE_DOC_START_MARKER;
 
+/**
+ * A utility class for creating a YAML ObjectMapper.
+ */
 public class YamlObjectMapper {
+    /**
+     * Creates and configures an instance of ObjectMapper for handling YAML data.
+     *
+     * @return The configured ObjectMapper instance.
+     */
     public static ObjectMapper createObjectMapper() {
         YAMLFactory yamlFactory = YAMLFactory.builder()
                 .disable(WRITE_DOC_START_MARKER)

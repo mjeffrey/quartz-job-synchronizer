@@ -8,6 +8,7 @@ import lombok.SneakyThrows;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
+import org.quartz.Trigger.TriggerState;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,15 +16,30 @@ import java.util.stream.Collectors;
 import static be.sysa.quartz.initializer.support.SetUtils.intersection;
 import static be.sysa.quartz.initializer.support.SetUtils.minus;
 
+/**
+ * A class that synchronizes the schedule of jobs based on the given {@link ScheduleDefinition}.
+ */
 @Value
 @Slf4j
 public class JobSynchronizer {
     ScheduleAccessor scheduleAccessor;
 
+    /**
+     * Creates a new instance of JobSynchronizer with the given Scheduler.
+     *
+     * @param scheduler the Scheduler used for job scheduling and management
+     */
     public JobSynchronizer(Scheduler scheduler) {
         this.scheduleAccessor = new ScheduleAccessor(scheduler);
     }
 
+    /**
+     * Synchronizes the schedule based on the provided ScheduleDefinition.
+     * Deletes specified groups, removes unused groups, adds new groups, and updates existing groups if needed.
+     * Additionally, adds dependent job triggers for all jobs in the provided groups.
+     *
+     * @param scheduleDefinition the ScheduleDefinition containing the schedule information
+     */
     @SneakyThrows
     public void synchronizeSchedule(ScheduleDefinition scheduleDefinition) {
         deleteGroupsSpecified(scheduleDefinition.getGroupsToDelete());
@@ -154,7 +170,7 @@ public class JobSynchronizer {
 
     @SneakyThrows
     private void deleteTriggers(Set<TriggerKey> removeTriggers) {
-        removeTriggers.forEach(scheduleAccessor::deleteTrigger);
+        removeTriggers.forEach(scheduleAccessor::unscheduleJob);
     }
 
     @SneakyThrows
@@ -183,7 +199,7 @@ public class JobSynchronizer {
     private void updateTriggerIfChanged(TriggerDefinition triggerDefinition) {
         TriggerKey triggerKey = triggerDefinition.getTriggerKey();
         Trigger trigger = scheduleAccessor.getTrigger(triggerKey);
-        if (ComparisonSupport.triggerChanged(trigger, triggerDefinition)) {
+        if (ComparisonSupport.triggerChanged(trigger, triggerDefinition) || triggerInError(triggerKey)) {
             CronTrigger cronTrigger = createTrigger(triggerDefinition);
             scheduleAccessor.rescheduleJob(triggerKey, cronTrigger);
             if (triggerDefinition.isMisfireExecution() && trigger.getNextFireTime().before(new Date())) {
@@ -197,6 +213,11 @@ public class JobSynchronizer {
                         .build());
             }
         }
+    }
+
+    private boolean triggerInError(TriggerKey triggerKey) {
+        TriggerState triggerState = scheduleAccessor.getTriggerState(triggerKey);
+        return triggerState == TriggerState.ERROR;
     }
 
     @SneakyThrows

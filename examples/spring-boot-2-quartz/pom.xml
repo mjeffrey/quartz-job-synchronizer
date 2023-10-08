@@ -8,17 +8,22 @@
     <packaging>jar</packaging>
     <description>Demo project for Scheduling in Spring with Quartz</description>
 
-    <groupId>be.sysa.quartz-job-synchronizer</groupId>
+    <groupId>be.sysa.quartz-job-synchronizer.examples</groupId>
     <artifactId>spring-boot-2-quartz</artifactId>
     <version>1.0.0</version>
 
     <properties>
         <spring-boot.version>2.7.14</spring-boot.version>
         <javac.target>11</javac.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- TODO replace me with the latest version -->
+        <quartz-job-synchronizer.version>local</quartz-job-synchronizer.version>
+
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <maven-enforcer-plugin.version>3.3.0</maven-enforcer-plugin.version>
+        <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
         <minimum-maven.version>3.6.0</minimum-maven.version>
-        <quartz-job-synchronizer.version>1.0.0</quartz-job-synchronizer.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -105,6 +110,14 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven-resources-plugin.version}</version>
+                <configuration>
+                    <encoding>utf-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <version>${maven-enforcer-plugin.version}</version>
                 <executions>
@@ -123,7 +136,6 @@
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
 </project>

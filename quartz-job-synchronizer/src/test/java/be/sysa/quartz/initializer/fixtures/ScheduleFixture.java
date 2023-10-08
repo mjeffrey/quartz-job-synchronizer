@@ -46,7 +46,7 @@ public class ScheduleFixture {
                 .jobData("datakey2", 0.123)
                 .build();
     }
-    public static JobDefinitionApi mimimalJob() {
+    public static JobDefinitionApi minimalJob() {
         return JobDefinitionApi.builder()
                 .name("MinimalJob")
                 .jobClass("be.sysa.quartz.initializer.fixtures.jobs.MyTestJob")

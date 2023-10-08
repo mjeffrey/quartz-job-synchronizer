@@ -8,18 +8,20 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.quartz.JobKey;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * The XmlMapper class is responsible for mapping XML data to ScheduleDefinitionApi models.
+ */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Mapper {
+public class XmlMapper {
+    /**
+     * Converts a ScheduleDataXml object to a ScheduleDefinitionApi object.
+     *
+     * @param scheduleDataXml The ScheduleDataXml object to convert.
+     * @return The converted ScheduleDefinitionApi object.
+     */
     public static ScheduleDefinitionApi toModel(ScheduleDataXml scheduleDataXml) {
         return toModel(scheduleDataXml.getSchedule());
     }
@@ -48,7 +50,7 @@ public class Mapper {
 
     private static Collection<JobDefinitionApi> toJobs(Collection<JobXml> jobs, Collection<CronTriggerXml> triggers) {
         Map<JobKey, List<CronTriggerXml>> jobTriggers = triggers.stream().collect(
-                Collectors.groupingBy(Mapper::jobKey,  LinkedHashMap::new, Collectors.toList()));
+                Collectors.groupingBy(XmlMapper::jobKey,  LinkedHashMap::new, Collectors.toList()));
         return jobs.stream().map(job -> JobDefinitionApi.builder()
                 .durable(job.isDurability())
                 .recover(job.isRecover())
@@ -62,7 +64,7 @@ public class Mapper {
 
     private static Collection<TriggerDefinitionApi> toTriggers(List<CronTriggerXml> triggers) {
         return triggers.stream()
-                .map(Mapper::toTrigger).collect(Collectors.toList());
+                .map(XmlMapper::toTrigger).collect(Collectors.toList());
     }
 
     private static TriggerDefinitionApi toTrigger(CronTriggerXml cronTriggerXml) {

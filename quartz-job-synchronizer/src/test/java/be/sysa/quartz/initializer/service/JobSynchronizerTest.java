@@ -10,7 +10,7 @@ import org.quartz.Scheduler;
 import org.quartz.impl.StdSchedulerFactory;
 
 import static be.sysa.quartz.initializer.fixtures.ScheduleFixture.maximalJob;
-import static be.sysa.quartz.initializer.fixtures.ScheduleFixture.mimimalJob;
+import static be.sysa.quartz.initializer.fixtures.ScheduleFixture.minimalJob;
 import static be.sysa.quartz.initializer.service.ScheduleLoader.writeString;
 
 public class JobSynchronizerTest {
@@ -19,7 +19,7 @@ public class JobSynchronizerTest {
     public void synchronizeSchedule() {
         JobSynchronizer jobSynchronizer = new JobSynchronizer(getScheduler());
         GroupDefinitionApi maximal = GroupDefinitionApi.builder().name("maximal").job(maximalJob()).build();
-        GroupDefinitionApi minimal = GroupDefinitionApi.builder().name("minimal").job(mimimalJob()).build();
+        GroupDefinitionApi minimal = GroupDefinitionApi.builder().name("minimal").job(minimalJob()).build();
         OptionsDefinitionApi options = OptionsDefinitionApi.builder().groupToDelete("CCC").build();
         ScheduleDefinitionApi scheduleDefinition = ScheduleDefinitionApi.builder()
                 .group(maximal)

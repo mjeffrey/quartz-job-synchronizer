@@ -8,6 +8,31 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.TriggerKey;
 import org.quartz.utils.Key;
 
+/**
+ * This class represents a difference between two objects.
+ *
+ * <p>
+ * The Difference class contains information about the difference, such as the key of the object,
+ * the type of difference, the existing value, and the new value.
+ * </p>
+ *
+ * <p>
+ * You can create a Difference object using the difference() methods, which allow you to specify the key,
+ * type, existing value, and new value of the difference.
+ * </p>
+ *
+ * <p>
+ * You can also log the difference using the log() method, which will output a formatted message containing
+ * the details of the difference.
+ * </p>
+ *
+ * <p>
+ * The Type enum contains different types of differences that can occur, such as changes in trigger key,
+ * priority, cron expression, timezone, etc. Each type has a parameterized string representation, which can
+ * be used to format the message when logging the difference. The Type enum also provides a utility method
+ * to generate a string representation for a change in a specific field.
+ * </p>
+ */
 @Value
 @Slf4j
 class Difference {

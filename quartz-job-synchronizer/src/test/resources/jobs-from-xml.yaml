@@ -2,7 +2,7 @@ schedule:
   - group: "maximal"
     jobs:
       - job-name: "MaximalJob"
-        job-class: "be.sysa.quartz.jobs.SampleJob"
+        job-class: "be.sysa.quartz.initializer.fixtures.jobs.MyTestJob"
         recover: true
         durable: true
         triggers:
@@ -23,7 +23,7 @@ schedule:
   - group: "minimal"
     jobs:
       - job-name: "MinimalJob"
-        job-class: "be.sysa.quartz.jobs.SampleJob"
+        job-class: "be.sysa.quartz.initializer.fixtures.jobs.MyTestJob"
         recover: false
         durable: false
         job-data-map: {}

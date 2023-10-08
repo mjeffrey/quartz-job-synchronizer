@@ -8,6 +8,10 @@ import lombok.Value;
 
 import java.util.List;
 
+/**
+ * Represents a schedule definition API.
+ * This class provides methods to retrieve schedule groups and options.
+ */
 @Value
 @Builder(toBuilder = true)
 public class ScheduleDefinitionApi {
@@ -19,6 +23,11 @@ public class ScheduleDefinitionApi {
     @JsonProperty("options")
     OptionsDefinitionApi options;
 
+    /**
+     * Retrieves the mandatory options.
+     *
+     * @return The OptionsDefinitionApi object representing the mandatory options. If the options are not set, a new empty OptionsDefinitionApi object is returned.
+     */
     @JsonIgnore
     public OptionsDefinitionApi getMandatoryOptions() {
         return options == null ? OptionsDefinitionApi.builder().build() : options;
