@@ -10,9 +10,9 @@ name: Java CI with Maven Coverage
 
 on:
   push:
-    branches: [ "coverage", "main" ]
+    branches: [ "coverage-disabled"]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "coverage-disabled" ]
 
 jobs:
   build:
