@@ -13,13 +13,10 @@
     <version>1.0.0</version>
 
     <properties>
-        <spring-boot.version>3.1.2</spring-boot.version>
+        <spring-boot.version>3.4.2</spring-boot.version>
         <javac.target>17</javac.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <!-- TODO replace me with the latest version -->
         <quartz-job-synchronizer.version>local</quartz-job-synchronizer.version>
-
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <maven-enforcer-plugin.version>3.3.0</maven-enforcer-plugin.version>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
@@ -69,7 +66,7 @@
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
-            <version>2.5.0-rc1</version>
+            <version>2.5.0</version>
         </dependency>
         <dependency>
             <groupId>be.sysa.quartz-job-synchronizer</groupId>

@@ -41,7 +41,7 @@
     <properties>
         <revision>local</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <javac.target>11</javac.target>
+        <javac.target>17</javac.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <rootDir>${maven.multiModuleProjectDirectory}</rootDir>

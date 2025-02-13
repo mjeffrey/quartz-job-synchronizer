@@ -19,7 +19,6 @@
     </properties>
 
     <modules>
-        <module>spring-boot-2-quartz</module>
         <module>spring-boot-3-quartz</module>
     </modules>
 
