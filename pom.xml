@@ -56,7 +56,7 @@
         <lombok.version>1.18.30</lombok.version>
         <mockito.version>5.4.0</mockito.version>
         <nimbus-jose-jwt.version>9.4.1</nimbus-jose-jwt.version>
-        <quartz.version>2.3.2</quartz.version>
+        <quartz.version>2.5.0</quartz.version>
         <slf4j.version>2.0.7</slf4j.version>
 
         <!-- Plugins -->
