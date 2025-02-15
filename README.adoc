@@ -107,6 +107,7 @@ This plugin is a direct replacement for the `XMLSchedulingDataProcessorPlugin` p
 
 First you need a YAML file. The easiest way is to convert from your existing schedule. Or write one by hand using one of the examples here. 
 
+*Limitation:* The xml file allows multiple <schedule> elements. The Exporter Plugin only supports one.
 [source,yaml]
 ----
   yamlScheduleExporter:
@@ -114,7 +115,7 @@ First you need a YAML file. The easiest way is to convert from your existing sch
     exportFile: "${java.io.tmpdir}/schedule-export.yaml"
 ----
 
-== Configuring the plugin
+== Configuring the YAML plugin
 The Synchronizer plugin only needs 1 parameter, a list of YAML files defining
 the jobs and their triggers. If you use NativeJob (or other Quartz provided plugins which are risky, then they need to be configured).
 Disabling unsafe jobs by default is a means to prevent injection attacks if the schedule is loaded by another mechanism.

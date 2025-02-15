@@ -139,6 +139,8 @@ public class JobSynchronizer {
                 .inTimeZone(triggerDefinition.getTimeZone());
         if (triggerDefinition.isMisfireExecution()) {
             scheduleBuilder.withMisfireHandlingInstructionFireAndProceed();
+        }else{
+            scheduleBuilder.withMisfireHandlingInstructionDoNothing();
         }
 
         String description = getDescription(triggerDefinition);

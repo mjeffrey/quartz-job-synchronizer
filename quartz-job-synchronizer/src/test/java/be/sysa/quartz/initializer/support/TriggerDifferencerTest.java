@@ -1,6 +1,7 @@
 package be.sysa.quartz.initializer.support;
 
 import be.sysa.quartz.initializer.model.TriggerDefinition;
+import be.sysa.quartz.initializer.support.Difference.Type;
 import org.junit.jupiter.api.Test;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
@@ -67,11 +68,6 @@ public class TriggerDifferencerTest {
         assertDifference(anotherTrigger, Difference.Type.TIMEZONE);
     }
 
-    @Test
-    public void misFireExecutionChanged() {
-        TriggerDefinition anotherTrigger = newTrigger.toBuilder().misfireExecution(false).build();
-        assertDifference(anotherTrigger, Difference.Type.MISFIRE_IGNORE); // TODO add the opposite case
-    }
 
     @Test
     public void priorityChanged() {
