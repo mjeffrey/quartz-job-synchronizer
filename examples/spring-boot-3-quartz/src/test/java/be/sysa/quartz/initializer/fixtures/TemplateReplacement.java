@@ -7,6 +7,7 @@ import java.util.Optional;
 
 @AllArgsConstructor
 public class TemplateReplacement {
+
     String template;
 
     public static String def(String value, String defaultValue) {
@@ -23,32 +24,26 @@ public class TemplateReplacement {
         template = replaceLine(token, value);
     }
 
+    private String processLines(String token, Object value, boolean removeOnly) {
+        return template.lines()
+                .map(line -> {
+                    if (StringUtils.contains(line, token)) {
+                        return (removeOnly || value == null) ? null : String.valueOf(value);
+                    }
+                    return line;
+                })
+                .filter(StringUtils::isNotBlank) // Filter out null or blank lines
+                .reduce((line1, line2) -> line1 + System.lineSeparator() + line2)
+                .orElse("");
+    }
+
     private String replaceLine(String token, Object value) {
-        String[] lines = template.split(System.lineSeparator());
-        StringBuilder sb = new StringBuilder();
-        for (String line : lines) {
-            if (StringUtils.contains(line, token)) {
-                if (value != null) {
-                    sb.append(value);
-                }
-            } else {
-                sb.append(line).append(System.lineSeparator());
-            }
-        }
-        return sb.toString();
+        return processLines(token, value, false);
     }
 
     private String removeLine(String token) {
-        String[] lines = template.split(System.lineSeparator());
-        StringBuilder sb = new StringBuilder();
-        for (String line : lines) {
-            if (!StringUtils.contains(line, token)) {
-                sb.append(line).append(System.lineSeparator());
-            }
-        }
-        return sb.toString();
+        return processLines(token, null, true);
     }
-
 
     @Override
     public String toString() {

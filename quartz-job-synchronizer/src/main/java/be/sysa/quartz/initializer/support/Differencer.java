@@ -49,7 +49,7 @@ class Differencer {
         JobKey key = jobDetail.getKey();
         changed(key, DURABLE, jobDetail.isDurable(), jobDefinition.isDurable());
         changed(key, RECOVERY, jobDetail.requestsRecovery(), jobDefinition.isRecover());
-        changed(key, JOB_CLASS, jobDetail.getJobClass(), jobDefinition.getJobClass());
+        changed(key, JOB_CLASS, jobDetail.getJobClass().getName(), jobDefinition.getJobClass().getName());
         dataMapChanged(key, jobDetail.getJobDataMap(), jobDefinition.getJobDataMap());
     }
 
@@ -98,16 +98,21 @@ class Differencer {
 
     private void misfireChange(CronTrigger trigger, TriggerDefinition triggerDefinition) {
         TriggerKey triggerKey = trigger.getKey();
-        int existingMisfireInstruction = trigger.getMisfireInstruction();
-        if (triggerDefinition.isMisfireExecution()) {
-            if (existingMisfireInstruction != CronTrigger.MISFIRE_INSTRUCTION_FIRE_ONCE_NOW) {
-                differences.add(Difference.difference(triggerKey, MISFIRE_EXECUTE_NOW));
-            }
-        } else {
-            if (existingMisfireInstruction != CronTrigger.MISFIRE_INSTRUCTION_DO_NOTHING) {
-                differences.add(Difference.difference(triggerKey, MISFIRE_IGNORE));
-            }
+        boolean existingMisfire = isMisfireConfigured(trigger);
+        boolean newMisfire = triggerDefinition.isMisfireExecution();
+        if (existingMisfire == newMisfire) {
+            return;
         }
+
+        if (newMisfire) {
+            differences.add(Difference.difference(triggerKey, MISFIRE_EXECUTE_NOW));
+        } else {
+            differences.add(Difference.difference(triggerKey, MISFIRE_IGNORE));
+        }
+    }
+
+    private boolean isMisfireConfigured(CronTrigger trigger) {
+        return trigger.getMisfireInstruction() == CronTrigger.MISFIRE_INSTRUCTION_FIRE_ONCE_NOW;
     }
 
     private void addJobDataMapDifference(Key<?> key, Difference.Type type, Object existingValue, Object newValue) {
