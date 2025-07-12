@@ -48,7 +48,7 @@
         <base.url>https://github.com/mjeffrey/quartz-job-synchronizer</base.url>
         <minimum-maven.version>3.6.0</minimum-maven.version>
         <assertj-core.version>3.24.2</assertj-core.version>
-        <commons-lang3.version>3.13.0</commons-lang3.version>
+        <commons-lang3.version>3.18.0</commons-lang3.version>
         <cron-expression-descriptor.version>1.2.6</cron-expression-descriptor.version>
         <jackson.version>2.15.2</jackson.version>
         <jsonassert.version>1.5.1</jsonassert.version>
